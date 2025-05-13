@@ -1,103 +1,171 @@
+"use client";
+
 import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <main className="font-sans text-gray-800">
+      {/* Navbar */}
+      <nav className="bg-white shadow-md fixed top-0 w-full z-50">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+          <div className="flex items-center space-x-2">
+            <img src="/logo.png" alt="Logo" className="h-10" />
+            <h1 className="text-lg font-bold">SMK MADINATULQURAN</h1>
+          </div>
+          <ul className="flex space-x-6">
+            <li>
+              <a href="#home" className="hover:text-green-600 font-medium">
+                Home
+              </a>
+            </li>
+            <li>
+              <a href="#tentang" className="hover:text-green-600 font-medium">
+                Tentang
+              </a>
+            </li>
+            <li>
+              <a href="#kurikulum" className="hover:text-green-600 font-medium">
+                Kurikulum
+              </a>
+            </li>
+            <li>
+              <a href="#about" className="hover:text-green-600 font-medium">
+                About Us
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
+      {/* Hero */}
+      <section
+        id="home"
+        className="pt-32 pb-20 bg-gradient-to-br from-green-100 to-white text-center"
+      >
+        <div className="max-w-4xl mx-auto px-4">
+          <h1 className="text-4xl md:text-5xl font-bold text-green-700 mb-4">
+            SMK MADINATULQURAN <br /> Boarding School
+          </h1>
+          <p className="text-gray-700 mb-8">
+            EDC menyediakan berbagai kelas industri untuk membantu perkembangan
+            yang kamu inginkan
+          </p>
+
+          {/* Gambar Bulat */}
+          <div className="flex justify-center space-x-4 mb-6">
+            <img src="/assets/group1.png" alt="photos" />
+          </div>
+        </div>
+      </section>
+
+      {/* Mitra / Kolaborasi */}
+      <section className="py-10 bg-white">
+        <div className="flex flex-wrap justify-center items-center gap-6 px-4 max-w-5xl mx-auto">
+          <img src="/assets/collab.png" className="h-12" alt="Mikrotik" />
+          <img src="/assets/mikrotik.png" className="h-12" alt="LSP" />
+          <img src="/assets/lsp.png" className="h-12" alt="lsp" />
+          <img src="/assets/pens.png" className="h-12" alt="pens" />
+          <img src="/assets/anabuki.png" className="h-12" alt="anabuki" />
+        </div>
+      </section>
+
+      {/* Visi */}
+      <section className="py-16 bg-gray-50 text-center flex items-center">
+        <div className="mx-auto">
+          <h2 className="text-3xl font-bold mb-6 text-green-700">
+            SMK MQ mencetak tenaga ahli siap bersaing di industri
+          </h2>
+          <p className="max-w-2xl mx-auto text-gray-600 mb-6">
+            SMK MQ siap membimbing dari nol hingga ahli dengan metode belajar
+            terbaik, kelas yang bisa diulang, dan peluang kerja terjamin.
+          </p>
+        </div>
+        <div>
+          <img src="/assets/group2.png" alt="photos" className="h-80" />
+        </div>
+      </section>
+
+      {/* Diniyah & Umum */}
+      <section id="kurikulum" className="py-10 bg-white text-center">
+        <h3 className="text-xl font-bold text-green-700 mb-2">
+          Diniyah & Umum
+        </h3>
+        <p className="text-gray-600 max-w-md mx-auto">
+          Sebagai acuan dasar dalam penyelenggaraan Lembaga Pendidikan Sekolah,
+          para santri juga dibekali pelajaran...
+        </p>
+      </section>
+
+      {/* Keunggulan */}
+      <section className="py-16 bg-gray-100 text-center">
+        <h2 className="text-3xl font-bold text-green-700 mb-10">
+          Keunggulan Sekolah MQ
+        </h2>
+        <div className="grid md:grid-cols-3 gap-6 px-4 max-w-6xl mx-auto">
+          {[
+            "Ekstrakulikuler Menarik & Beragam",
+            "Pesantren Berbasis IT",
+            "Program Keahlian Sesuai Kebutuhan Industri",
+            "Sertifikat Kompetensi",
+            "Lingkungan Asri",
+            "Dibimbing oleh Tenaga Pengajar Berpengalaman",
+          ].map((title, idx) => (
+            <div
+              key={idx}
+              className="bg-white p-6 rounded-lg shadow-md text-sm font-medium"
+            >
+              {title}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Call to Action */}
+      <section className="py-16 bg-gradient-to-br from-purple-100 to-blue-100 text-center">
+        <div className="max-w-2xl mx-auto px-4">
+          <h3 className="text-2xl font-bold mb-4 text-gray-800">
+            Segera Daftarkan Putra Anda Sekarang
+          </h3>
+          <p className="mb-6 text-gray-700">
+            InsyaAllah kami adalah jawaban ayah bunda yang ingin putranya
+            belajar IT, tetapi tetap memprioritaskan diniyah sebagai bekal
+            hidupnya.
+          </p>
           <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="#"
+            className="inline-block bg-green-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-green-700"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
+            Daftar Sekarang
           </a>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-green-700 text-white py-10">
+        <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-6">
+          <div>
+            <img src="/logo.png" className="h-10 mb-2" />
+            <p>SMK Madinatulquran Boarding School</p>
+          </div>
+          <div>
+            <h4 className="font-bold mb-2">Kontak</h4>
+            <p>0851 6288 2547 (Yusuf)</p>
+            <p>0821 6920 4657 (Hisyam)</p>
+            <p>info@smkmadinatulquran.sch.id</p>
+          </div>
+          <div>
+            <h4 className="font-bold mb-2">Alamat</h4>
+            <p>
+              Ng. Kebon Kalapa, Jl. KH. R. Kosim RW01, Sindangsari, Kec. Sajira,
+              Kab. Lebak, Banten
+            </p>
+            <p>NPSN: 69944476</p>
+          </div>
+        </div>
+        <div className="text-center mt-8 text-sm">
+          © 2025 SMK MQ. All rights reserved.
+        </div>
       </footer>
-    </div>
+    </main>
   );
 }
