@@ -1,8 +1,10 @@
+"use client";
 import Sidebar from "@/app/components/sidebar";
-import WelcomeCard from "../components/welcomeCard";
-import RecruitmentTable from "../components/requirementTable";
-import CalendarCard from "../components/calendarCard";
-import ProfileCard from "../components/profileCard";
+import WelcomeCard from "../../components/welcomeCard";
+import RecruitmentTable from "../../components/requirementTable";
+import CalendarCard from "../../components/calendarCard";
+import ProfileCard from "../../components/profileCard";
+
 
 const Dashboard = () => {
   return (

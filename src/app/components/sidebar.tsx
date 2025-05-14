@@ -6,10 +6,10 @@ import { Home, Users, User, Settings } from "lucide-react";
 import Image from "next/image";
 
 const menuItems = [
-  { name: "Dashboard", icon: <Home className="w-5 h-5" />, href: "/dashboard" },
-  { name: "Users", icon: <Users className="w-5 h-5" />, href: "/dashboard/users" },
-  { name: "Profile", icon: <User className="w-5 h-5" />, href: "/dashboard/profile" },
-  { name: "Settings", icon: <Settings className="w-5 h-5" />, href: "/dashboard/settings" },
+  { name: "Dashboard", icon: <Home className="w-5 h-5" />, href: "/dashboard/admin" },
+  { name: "Users", icon: <Users className="w-5 h-5" />, href: "/dashboard/admin/users" },
+  { name: "Profile", icon: <User className="w-5 h-5" />, href: "/dashboard/admin/profile" },
+  { name: "Settings", icon: <Settings className="w-5 h-5" />, href: "/dashboard/admin/settings" },
 ];
 
 const Sidebar = () => {
