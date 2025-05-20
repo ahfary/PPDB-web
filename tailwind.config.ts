@@ -8,6 +8,9 @@ const config = {
         serif: ['Georgia', 'serif'],
         monospace: ['Courier New', 'monospace'],
       },
+      colors: {
+        bg1: '#278550',
+      }
     },
   },
   plugins: [daisyui],

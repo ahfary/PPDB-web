@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <main className="font-sans text-gray-800">
       {/* Navbar */}
-      <nav className="navbar bg-white shadow-md fixed top-0 w-full z-50 px-32">
+      <nav className="navbar shadow-md fixed top-0 w-full z-50 px-32">
         <div className="flex items-center space-x-2 navbar-start">
           <img src="/assets/mq.jpg" alt="Logo" className="h-10" />
         </div>
@@ -57,7 +57,7 @@ export default function Home() {
       </section>
 
       {/* Mitra / Kolaborasi */}
-      <section className="py-10 bg-white py-24">
+      <section className="py-10 py-24">
         <div className="flex flex-wrap justify-center items-center gap-6 px-4 max-w-5xl mx-auto">
           <img src="/assets/collab.png" className="h-12" alt="Mikrotik" />
           <img src="/assets/mikrotik.png" className="h-12" alt="LSP" />
@@ -84,7 +84,7 @@ export default function Home() {
       </section>
 
       {/* Diniyah & Umum */}
-      <section id="kurikulum" className="min-h-screen py-10 bg-white flex justify-center items-center px-44">
+      <section id="kurikulum" className="min-h-screen py-10 flex justify-center items-center px-44">
         <div className="flex flex-col gap-12 px-4 max-w-5xl mx-auto">
           <h3 className="text-4xl font-bold text-green-700 mb-2">
             Diniyah & Umum

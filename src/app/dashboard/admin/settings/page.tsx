@@ -1,6 +1,7 @@
 "use client";
 import Sidebar from "@/app/components/sidebar";
 import { useState, useEffect, SetStateAction } from "react";
+import clsx from "clsx";
 
 export default function Settings() {
   // State untuk menyimpan pengaturan font dan tema
@@ -67,43 +68,51 @@ export default function Settings() {
   return (
     <div className="flex bg-gray-100 text-black">
       <Sidebar />
-      <div className="p-8 space-y-4">
-        <h1 className="text-2xl font-bold">Settings</h1>
-        <div className="space-y-2">
-          <label className="block">
-            <span className="text-gray-700">Theme</span>
-            <select
-              value={theme}
-              onChange={handleThemeChange}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            >
-              <option value="light">Light</option>
-              <option value="dark">Dark</option>
-            </select>
-          </label>
-        </div>
+      <div className="p-8">
+        <h1 className="text-2xl font-bold mb-6">Settings</h1>
 
-        <div className="space-y-2">
-          <label className="block">
-            <span className="text-gray-700">Font</span>
-            <select
-              value={font}
-              onChange={handleFontChange}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            >
-              <option value="sans-serif">Sans-serif</option>
-              <option value="serif">Serif</option>
-              <option value="monospace">Monospace</option>
-            </select>
-          </label>
-        </div>
+        <div className="bg-white rounded-md shadow-md p-6 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Theme
+              </label>
+              <select
+                value={theme}
+                onChange={handleThemeChange}
+                className="w-full border border-gray-300 rounded-md px-3 py-2"
+              >
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+              </select>
+            </div>
 
-        <button
-          onClick={handleSaveChanges}
-          className="btn btn-info"
-        >
-          Save Changes
-        </button>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Font
+              </label>
+              <select
+                value={font}
+                onChange={handleFontChange}
+                className="w-full border border-gray-300 rounded-md px-3 py-2"
+              >
+                <option value="sans-serif">Sans-serif</option>
+                <option value="serif">Serif</option>
+                <option value="monospace">Monospace</option>
+              </select>
+            </div>
+          </div>
+
+          <button
+            onClick={handleSaveChanges}
+            className={clsx(
+              "px-4 py-2 rounded-md text-white font-medium transition",
+              "bg-blue-600 hover:bg-blue-700"
+            )}
+          >
+            Save Changes
+          </button>
+        </div>
       </div>
     </div>
   );
