@@ -92,11 +92,31 @@ export default function StatistikPage() {
     fetchData();
   }, []);
 
-  console.log(summaryData.siswaLaki);
+  const handleDelete = async (id: string) => {
+    try {
+      const res = await fetch(`/api/siswa/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        throw new Error("Gagal menghapus data siswa.");
+      }
+
+      // Hapus dari tampilan tanpa reload
+      setDataSiswa((prev) => prev.filter((item: any) => item.siswa.id !== id));
+
+      MySwal.fire("Terhapus!", "Data berhasil dihapus.", "success");
+    } catch (err) {
+      console.error(err);
+      MySwal.fire("Gagal!", "Terjadi kesalahan saat menghapus.", "error");
+    }
+  };
+
+  // console.log(summaryData.siswaLaki);
   return (
     <div className="flex bg-gray-100 min-h-screen text-black">
       <Sidebar />
-      <main className="flex-1 p-6 md:p-10 overflow-y-auto h-screen">
+      <main className="flex-1 p-6 md:p-8 overflow-y-auto h-screen">
         <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
 
         {/* Ringkasan */}

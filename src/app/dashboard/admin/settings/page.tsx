@@ -2,6 +2,10 @@
 import Sidebar from "@/app/components/sidebar";
 import { useState, useEffect, SetStateAction } from "react";
 import clsx from "clsx";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const MySwal = withReactContent(Swal);
 
 export default function Settings() {
   // State untuk menyimpan pengaturan font dan tema
@@ -106,7 +110,7 @@ export default function Settings() {
           <button
             onClick={handleSaveChanges}
             className={clsx(
-              "px-4 py-2 rounded-md text-white font-medium transition",
+              "btn btn-jnfo border-none",
               "bg-blue-600 hover:bg-blue-700"
             )}
           >

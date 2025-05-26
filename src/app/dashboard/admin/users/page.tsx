@@ -3,42 +3,14 @@
 import Sidebar from "@/app/components/sidebar";
 import { FaEye, FaTrash } from "react-icons/fa";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const MySwal = withReactContent(Swal);
 
 const Users = () => {
-  const users = [
-    {
-      name: "Valent",
-      location: "Kab. Bandung",
-      major: "Rekayasa Perangkat Lunak",
-      phone: "08512219132421",
-      email: "smkadmin@gmail.com",
-      status: "Tech Interview",
-    },
-    {
-      name: "User",
-      location: "Jakarta",
-      major: "Rekayasa Perangkat Lunak",
-      phone: "0892321423123",
-      email: "smkadmin@gmail.com",
-      status: "Task",
-    },
-    {
-      name: "User",
-      location: "Kuta",
-      major: "Teknik Komputer Dan Jaringan",
-      phone: "0842377522221",
-      email: "smkadmin@gmail.com",
-      status: "Resume Review",
-    },
-    {
-      name: "User",
-      location: "Bekasi",
-      major: "Rekayasa Perangkat Lunak",
-      phone: "083123445424431",
-      email: "smkadmin@gmail.com",
-      status: "Final Interview",
-    },
-  ];
+  const router = useRouter();
 
   const getBadgeColor = (status: string) => {
     switch (status) {
@@ -57,36 +29,65 @@ const Users = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [filterBy, setFilterBy] = useState("Nama");
+  const [dataSiswa, setDataSiswa] = useState([]);
 
-  // Filter users berdasarkan filterBy dan searchTerm
-  const filteredUsers = users.filter((user) => {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch("/api/statistic");
+        if (!res.ok) {
+          throw new Error("Gagal mengambil data siswa.");
+        }
+        const result = await res.json();
+        setDataSiswa(result.dataSiswa);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        MySwal.fire("Error", "Gagal mengambil data siswa.", "error");
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const filteredUsers = dataSiswa.filter((item: any) => {
     const term = searchTerm.toLowerCase();
 
-    if (!term) return true; // jika kosong, tampilkan semua
+    if (!term) return true;
 
     switch (filterBy) {
       case "Nama":
-        return user.name.toLowerCase().includes(term);
+        return item.siswa.nama.toLowerCase().includes(term);
       case "Domisili":
-        return user.location.toLowerCase().includes(term);
+        return item.siswa.domisili.toLowerCase().includes(term);
       case "Jurusan":
-        return user.major.toLowerCase().includes(term);
+        return item.siswa.jurusan.toLowerCase().includes(term);
       default:
         return false;
     }
   });
 
-  const [dataSiswa, setDataSiswa] = useState([]);
+  const handleDelete = async (id: string) => {
+    try {
+      const res = await fetch(`/api/siswa/${id}`, {
+        method: "DELETE",
+      });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await fetch("/api/statistic");
-      const result = await res.json();
-      setDataSiswa(result.dataSiswa);
-    };
+      console.log(res)
+      
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Gagal menghapus data siswa.");
+      }
+      
+      // Perbarui state lokal setelah penghapusan berhasil
+      setDataSiswa((prev) => prev.filter((item: any) => item.siswa.id !== id));
 
-    fetchData();
-  }, []);
+      MySwal.fire("Terhapus!", "Data berhasil dihapus.", "success");
+    } catch (err: any) {
+      console.error("Error deleting data:", err);
+      MySwal.fire("Gagal!", err.message || "Terjadi kesalahan saat menghapus.", "error");
+    }
+  };
 
   return (
     <div className="flex bg-gray-100 min-h-screen">
@@ -121,117 +122,128 @@ const Users = () => {
               <tr>
                 <th className="p-4">No.</th>
                 <th className="p-4">Photo</th>
-                <th className="p-4">Name</th>
-                <th className="p-4">Major</th>
-                <th className="p-4">Phone number</th>
+                <th className="p-4">Nama</th>
+                <th className="p-4">Jurusan</th>
+                <th className="p-4">Nomor Telepon</th>
                 <th className="p-4">Asal Sekolah</th>
                 <th className="p-4">Status</th>
-                <th className="p-4">More</th>
+                <th className="p-4">Lainnya</th>
               </tr>
             </thead>
             <tbody>
-
-              {
-                dataSiswa.length > 0 ? (
-                dataSiswa.map((item: any, index: number) => (
+              {filteredUsers.length > 0 ? (
+                filteredUsers.map((item: any, index: number) => (
                   <tr key={index} className="border-b hover:bg-gray-50">
-                  <td className="p-4">{index + 1}</td>
-                  <td className="p-4">
-                    <img
-                      src="https://randomuser.me/api/portraits/lego/1.jpg"
-                      className="w-10 h-10 rounded-full"
-                      alt="avatar"
-                    />
-                  </td>
-                  <td className="p-4">
-                    <div className="font-semibold">{item.siswa.nama}</div>
-                    <div className="text-sm text-gray-500">{item.siswa.alamat}</div>
-                  </td>
-                  <td className="p-4">{item.siswa.jurusan}</td>
-                  <td className="p-4">{item.siswa.noTelpOrtu}</td>
-                  <td className="p-4">{item.siswa.asalSekolah}</td>
-                  <td className="p-4">
-                    <span
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${getBadgeColor(
-                        item.siswa.status
-                      )}`}
-                    >
-                      {item.siswa.status}
-                    </span>
-                  </td>
-                  <td className="p-4 flex items-center gap-3">
-                    <button className="text-gray-600 hover:text-black">
-                      <FaEye className="cursor-pointer" size={24} />
-                    </button>
-                    <button className="text-red-600 hover:text-red-800">
-                      <FaTrash className="cursor-pointer" size={24} />
-                    </button>
-                  </td>
-                </tr>
-                ))
-                ) : (
-                  <tr>
-                    <td colSpan={8} className="text-center p-4">
-                      Tidak ada data yang ditemukan
+                    <td className="p-4">{index + 1}</td>
+                    <td className="p-4">
+                      <img
+                        src="https://randomuser.me/api/portraits/lego/1.jpg"
+                        className="w-10 h-10 rounded-full"
+                        alt="avatar"
+                      />
+                    </td>
+                    <td className="p-4">
+                      <div className="font-semibold">{item.siswa.nama}</div>
+                      <div className="text-sm text-gray-500">
+                        {item.siswa.alamat}
+                      </div>
+                    </td>
+                    <td className="p-4">{item.siswa.jurusan}</td>
+                    <td className="p-4">{item.siswa.noTelpOrtu}</td>
+                    <td className="p-4">{item.siswa.asalSekolah}</td>
+                    <td className="p-4">
+                      <span
+                        className={`px-3 py-1 rounded-full text-sm font-medium ${getBadgeColor(
+                          item.siswa.status
+                        )}`}
+                      >
+                        {item.siswa.status}
+                      </span>
+                    </td>
+                    <td className="p-4 flex items-center gap-3">
+                      <button
+                        className="text-gray-400 hover:text-black"
+                        onClick={() =>
+                          MySwal.fire({
+                            title: <p>{item.siswa.nama}</p>,
+                            html: (
+                              <div className="text-left">
+                                <p>
+                                  <strong>Domisili:</strong>{" "}
+                                  {item.siswa.domisili}
+                                </p>
+                                <p>
+                                  <strong>Asal Sekolah:</strong>{" "}
+                                  {item.siswa.asalSekolah}
+                                </p>
+                                <p>
+                                  <strong>Jurusan:</strong> {item.siswa.jurusan}
+                                </p>
+                              </div>
+                            ),
+                            showCancelButton: true,
+                            showConfirmButton: true,
+                            confirmButtonText: "Lihat Detail",
+                            cancelButtonText: "Tutup",
+                            reverseButtons: true,
+                          }).then((result: any) => {
+                            if (result.isConfirmed) {
+                              router.push(`/dashboard/admin/users/detail/${item.siswa.id}`);
+                            }
+                          })
+                        }
+                      >
+                        <FaEye className="cursor-pointer" size={24} />
+                      </button>
+                      <button
+                        className="text-gray-400 hover:text-red-500"
+                        onClick={async () => {
+                          const result = await MySwal.fire({
+                            title: "Yakin ingin menghapus?",
+                            text: "Data ini tidak dapat dikembalikan!",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#d33",
+                            cancelButtonColor: "#3085d6",
+                            confirmButtonText: "Ya, hapus!",
+                            cancelButtonText: "Batal",
+                          });
+                          if (result.isConfirmed) {
+                            handleDelete(item.siswa.id);
+                          }
+                        }}
+                      >
+                        <FaTrash className="cursor-pointer" size={24} />
+                      </button>
                     </td>
                   </tr>
-                )
-              }
-              {/* {filteredUsers.map((user, idx) => (
-                <tr key={idx} className="border-b hover:bg-gray-50">
-                  <td className="p-4">{idx + 1}</td>
-                  <td className="p-4">
-                    <img
-                      src="https://randomuser.me/api/portraits/lego/1.jpg"
-                      className="w-10 h-10 rounded-full"
-                      alt="avatar"
-                    />
-                  </td>
-                  <td className="p-4">
-                    <div className="font-semibold">{user.name}</div>
-                    <div className="text-sm text-gray-500">{user.location}</div>
-                  </td>
-                  <td className="p-4">{user.major}</td>
-                  <td className="p-4">{user.phone}</td>
-                  <td className="p-4">{user.email}</td>
-                  <td className="p-4">
-                    <span
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${getBadgeColor(
-                        user.status
-                      )}`}
-                    >
-                      {user.status}
-                    </span>
-                  </td>
-                  <td className="p-4 flex items-center gap-3">
-                    <button className="text-gray-600 hover:text-black">
-                      <FaEye className="cursor-pointer" size={24} />
-                    </button>
-                    <button className="text-red-600 hover:text-red-800">
-                      <FaTrash className="cursor-pointer" size={24} />
-                    </button>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={8} className="text-center p-4">
+                    Tidak ada data yang ditemukan
                   </td>
                 </tr>
-              ))} */}
+              )}
             </tbody>
           </table>
 
           {/* Pagination */}
           <div className="flex justify-end p-4">
             <div className="join">
-              <button className="join-item bg-gray-200 text-gray-500 btn btn-md border-none outline-none focus:outline-none">
+              <button className="join-item bg-gray-200 text-gray-500 btn btn-md border-none">
                 «
               </button>
-              <button className="join-item bg-gray-200 text-gray-500 btn btn-md btn-active border-none outline-none focus:outline-none">
+              <button className="join-item bg-gray-200 text-gray-500 btn btn-md btn-active border-none">
                 1
               </button>
-              <button className="join-item bg-gray-200 text-gray-500 btn btn-md border-none outline-none focus:outline-none">
+              <button className="join-item bg-gray-200 text-gray-500 btn btn-md border-none">
                 2
               </button>
-              <button className="join-item bg-gray-200 text-gray-500 btn btn-md border-none outline-none focus:outline-none">
+              <button className="join-item bg-gray-200 text-gray-500 btn btn-md border-none">
                 3
               </button>
-              <button className="join-item bg-gray-200 text-gray-500 btn btn-md border-none outline-none focus:outline-none">
+              <button className="join-item bg-gray-200 text-gray-500 btn btn-md border-none">
                 »
               </button>
             </div>
