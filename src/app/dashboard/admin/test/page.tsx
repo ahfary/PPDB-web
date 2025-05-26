@@ -10,7 +10,7 @@ const mapelList = [
     desc: "ilmu yang mempelajari angka, struktur, hubungan, dan operasi, serta bentuk-bentuk dalam ruang dan struktur serta pengukurannya. Matematika membantu memahami dunia di sekitar kita dan cara kerjanya, serta mengembangkan kemampuan berpikir logis, analisis, sistematis, kritis, dan kreatif. ",
   },
   {
-    id: "psikologi",
+    id: "psikolog",
     name: "Psikologi",
     desc: "mata pelajaran yang mempelajari tentang perilaku dan proses mental manusia. Psikologi adalah ilmu pengetahuan yang mempelajari pikiran, emosi, dan perilaku manusia, serta faktor-faktor yang mempengaruhinya. ",
   },

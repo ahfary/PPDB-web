@@ -1,11 +1,11 @@
 // app/api/soal/route.js
 import { initializeApp, getApps } from "firebase/app";
-import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { getFirestore, collection, getDocs, query, where } from "firebase/firestore";
 import { NextResponse } from "next/server";
 
 // Config Firebase
 const firebaseConfig = {
-apiKey: "AIzaSyDqaxNwwZF5W5Oy2kw1CtQdnrDKlNJmImc",
+  apiKey: "AIzaSyDqaxNwwZF5W5Oy2kw1CtQdnrDKlNJmImc",
   authDomain: "ppdb-project-b213e.firebaseapp.com",
   projectId: "ppdb-project-b213e",
   storageBucket: "ppdb-project-b213e.firebasestorage.app",
@@ -19,14 +19,30 @@ if (getApps().length === 0) {
 
 const db = getFirestore();
 
-export async function GET() {
-  const soalCollection = collection(db, "soal_test");
-  const snapshot = await getDocs(soalCollection);
+export async function GET(request) {
+  const { searchParams } = new URL(request.url);
+  const mapel = searchParams.get("mapel");
+  const getid = searchParams.get("id");
+  console.log(getid)
 
-  const data = snapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-  }));
+  try {
+    let soalQuery = collection(db, "soal_test");
+    let q = soalQuery;
 
-  return NextResponse.json(data);
+    if (mapel) {
+      // Mencari dokumen di mana field 'nama_pelajaran' sama dengan mapel
+      q = query(soalQuery, where("nama_pelajaran", "==", getid));
+    }
+
+    const snapshot = await getDocs(q);
+    const data = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error("Error fetching soal:", error);
+    return NextResponse.json({ error: "Failed to fetch soal" }, { status: 500 });
+  }
 }
