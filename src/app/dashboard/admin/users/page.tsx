@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import Image from "next/image";
 
 const MySwal = withReactContent(Swal);
 
@@ -90,7 +91,7 @@ const Users = () => {
   };
 
   return (
-    <div className="flex bg-gray-100 min-h-screen">
+    <div className="flex bg-gray-100 min-h-screen text-black dark:bg-[#2a3a818a] dark:text-white">
       <Sidebar />
       <div className="flex-1 p-8">
         {/* Header */}
@@ -98,13 +99,13 @@ const Users = () => {
           <h1 className="text-2xl font-bold">Students</h1>
           <div className="join">
             <input
-              className="input join-item bg-gray-200 w-80"
+              className="input join-item bg-gray-200 w-80 dark:bg-[#0F103F]"
               placeholder="Search"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             <select
-              className="select join-item bg-gray-200"
+              className="select join-item bg-gray-200 dark:bg-[#0F103F]"
               value={filterBy}
               onChange={(e) => setFilterBy(e.target.value)}
             >
@@ -116,30 +117,32 @@ const Users = () => {
         </div>
 
         {/* Table */}
-        <div className="overflow-x-auto bg-white rounded-xl shadow-md">
+        <div className="overflow-x-auto bg-white rounded-xl shadow-md text-black dark:bg-white/40 dark:text-white">
           <table className="min-w-full">
             <thead className="text-left text-gray-500 border-b">
               <tr>
-                <th className="p-4">No.</th>
-                <th className="p-4">Photo</th>
-                <th className="p-4">Nama</th>
-                <th className="p-4">Jurusan</th>
-                <th className="p-4">Nomor Telepon</th>
-                <th className="p-4">Asal Sekolah</th>
-                <th className="p-4">Status</th>
-                <th className="p-4">Lainnya</th>
+                <th className="p-4 dark:text-[#0F103F]">No.</th>
+                <th className="p-4 dark:text-[#0F103F]">Photo</th>
+                <th className="p-4 dark:text-[#0F103F]">Nama</th>
+                <th className="p-4 dark:text-[#0F103F]">Jurusan</th>
+                <th className="p-4 dark:text-[#0F103F]">Nomor Telepon</th>
+                <th className="p-4 dark:text-[#0F103F]">Asal Sekolah</th>
+                <th className="p-4 dark:text-[#0F103F]">Status</th>
+                <th className="p-4 dark:text-[#0F103F]">Lainnya</th>
               </tr>
             </thead>
             <tbody>
               {filteredUsers.length > 0 ? (
                 filteredUsers.map((item: any, index: number) => (
-                  <tr key={index} className="border-b hover:bg-gray-50">
+                  <tr key={index} className="hover:bg-gray-50 dark:hover:bg-white/10">
                     <td className="p-4">{index + 1}</td>
                     <td className="p-4">
-                      <img
+                      <Image
                         src="https://randomuser.me/api/portraits/lego/1.jpg"
                         className="w-10 h-10 rounded-full"
                         alt="avatar"
+                        width={40}
+                        height={40}
                       />
                     </td>
                     <td className="p-4">

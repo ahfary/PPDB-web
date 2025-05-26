@@ -2,10 +2,6 @@
 import Sidebar from "@/app/components/sidebar";
 import { useState, useEffect, SetStateAction } from "react";
 import clsx from "clsx";
-import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
-
-const MySwal = withReactContent(Swal);
 
 export default function Settings() {
   // State untuk menyimpan pengaturan font dan tema
@@ -70,12 +66,12 @@ export default function Settings() {
   }, []);
 
   return (
-    <div className="flex bg-gray-100 text-black">
+    <div className="flex bg-gray-100 text-black dark:bg-[#2a3a818a]">
       <Sidebar />
       <div className="p-8">
-        <h1 className="text-2xl font-bold mb-6">Settings</h1>
+        <h1 className="text-2xl font-bold mb-6 dark:text-white">Settings</h1>
 
-        <div className="bg-white rounded-md shadow-md p-6 space-y-6">
+        <div className="bg-white rounded-md shadow-md p-6 space-y-6 dark:bg-info">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">

@@ -24,7 +24,7 @@ const Sidebar = () => {
   }
 
   return (
-    <aside className="w-64 h-screen bg-[#278550] flex flex-col justify-between text-white p-4">
+    <aside className="w-64 h-screen bg-[#278550] flex flex-col justify-between text-white p-4 dark:bg-[#0F103F]">
       <div>
         <div className="text-2xl font-bold mb-10">PPDB</div>
 
@@ -36,7 +36,7 @@ const Sidebar = () => {
                 key={item.name}
                 href={item.href}
                 className={`flex items-center gap-3 p-3 rounded-xl transition font-semibold ${
-                  isActive ? "bg-[#41AD89] text-white" : "hover:bg-white/10 text-white"
+                  isActive ? "bg-[#41AD89] dark:bg-white/30 text-white" : "hover:bg-white/10 text-white"
                 }`}
               >
                 {item.icon}
@@ -47,7 +47,7 @@ const Sidebar = () => {
         </nav>
       </div>
 
-      <div className="bg-[#50A663] rounded-xl p-4 mt-6 text-sm space-y-2">
+      <div className="bg-[#50A663] dark:bg-info rounded-xl p-4 mt-6 text-sm space-y-2">
         <Image
           src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png"
           alt="promo"
@@ -58,7 +58,7 @@ const Sidebar = () => {
         <p className="text-center font-semibold">Mr Abqory</p>
         <button
           onClick={handleLogout}
-          className="btn btn-block btn-success text-white mt-2"
+          className="btn btn-block btn-success text-white mt-2 dark:btn-primary"
         >
           Logout
         </button>

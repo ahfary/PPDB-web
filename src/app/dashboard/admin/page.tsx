@@ -34,6 +34,7 @@ export default function StatistikPage() {
     jumlahTidakLulus: 0,
   });
 
+  
   // Data statis untuk visualisasi sementara
   const rataNilaiPerTes = [
     { tes: "Tes 1", nilai: 72 },
@@ -42,17 +43,17 @@ export default function StatistikPage() {
     { tes: "Tes 4", nilai: 74 },
     { tes: "Tes 5", nilai: 80 },
   ];
-
+  
   const genderDistribusi = [
     { name: "laki-laki", value: summaryData.siswaLaki },
     { name: "perempuan", value: summaryData.siswaPerempuan },
   ];
-
+  
   const nilaiPerGender = [
     { gender: "Laki-laki", rataRata: 87 },
     { gender: "Perempuan", rataRata: 50 },
   ];
-
+  
   const distribusiNilai = [
     { range: "<60", jumlah: 10 },
     { range: "60–70", jumlah: 25 },
@@ -60,7 +61,7 @@ export default function StatistikPage() {
     { range: "80–90", jumlah: 30 },
     { range: "90+", jumlah: 15 },
   ];
-
+  
   const domisiliData = [
     { kota: "Jakarta", jumlah: 30 },
     { kota: "Bandung", jumlah: 20 },
@@ -69,14 +70,14 @@ export default function StatistikPage() {
     { kota: "Medan", jumlah: 8 },
     { kota: "Makassar", jumlah: 5 },
   ];
-
+  
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetch("/api/statistic");
       const result = await response.json();
-
+      
       setData(result.dataSiswa);
-
+      
       // Update summary berdasarkan field yang sesuai
       setSummaryData({
         totalSiswa: result.total,
@@ -88,30 +89,12 @@ export default function StatistikPage() {
         jumlahTidakLulus: 1, // ganti sesuai logic kamu kalau sudah ada fieldnya
       });
     };
-
+    
     fetchData();
   }, []);
-
-  const handleDelete = async (id: string) => {
-    try {
-      const res = await fetch(`/api/siswa/${id}`, {
-        method: "DELETE",
-      });
-
-      if (!res.ok) {
-        throw new Error("Gagal menghapus data siswa.");
-      }
-
-      // Hapus dari tampilan tanpa reload
-      setDataSiswa((prev) => prev.filter((item: any) => item.siswa.id !== id));
-
-      MySwal.fire("Terhapus!", "Data berhasil dihapus.", "success");
-    } catch (err) {
-      console.error(err);
-      MySwal.fire("Gagal!", "Terjadi kesalahan saat menghapus.", "error");
-    }
-  };
-
+  
+  console.log(data)
+  
   // console.log(summaryData.siswaLaki);
   return (
     <div className="flex bg-gray-100 min-h-screen text-black">
