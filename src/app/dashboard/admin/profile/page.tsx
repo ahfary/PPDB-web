@@ -36,13 +36,13 @@ const Profile = () => {
     // Submit logic here
   };
   return (
-    <div className="flex bg-gray-100 text-black">
+    <div className="flex bg-gray-100 text-black dark:bg-[#242F59] dark:text-white">
       <Sidebar />
       <div>
         <div className="p-8">
           <h1 className="text-2xl font-bold">Profil</h1>
         </div>
-        <div className="p-8 border-2 mx-8 w-[210%]">
+        <div className="p-8 shadow-2xl dark:shadow-white/20 mx-8 w-[210%] dark:bg-[#0F103F]">
           <div className="flex flex-col items-center justify-center mb-6">
             <div className="relative">
               <Image
@@ -73,43 +73,43 @@ const Profile = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="text-sm text-gray-600">Full Name</label>
+                <label className="text-sm text-gray-600 dark:text-white">Full Name</label>
                 <input
                   type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
                   disabled={!isEditing}
-                  className="mt-1 p-2 w-full border rounded-md bg-gray-100 disabled:bg-gray-200"
+                  className="mt-1 p-2 w-full border dark:border-[#242F59] rounded-md bg-gray-100 disabled:bg-gray-200 dark:bg-[#242F59]"
                 />
               </div>
 
               <div>
-                <label className="text-sm text-gray-600">Email</label>
+                <label className="text-sm text-gray-600 dark:text-white">Email</label>
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
                   disabled={!isEditing}
-                  className="mt-1 p-2 w-full border rounded-md bg-gray-100 disabled:bg-gray-200"
+                  className="mt-1 p-2 w-full border dark:border-[#242F59] rounded-md bg-gray-100 disabled:bg-gray-200 dark:bg-[#242F59]"
                 />
               </div>
 
               <div>
-                <label className="text-sm text-gray-600">Phone Number</label>
+                <label className="text-sm text-gray-600 dark:text-white">Phone Number</label>
                 <input
                   type="text"
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
                   disabled={!isEditing}
-                  className="mt-1 p-2 w-full border rounded-md bg-gray-100 disabled:bg-gray-200"
+                  className="mt-1 p-2 w-full border dark:border-[#242F59] rounded-md bg-gray-100 disabled:bg-gray-200 dark:bg-[#242F59]"
                 />
               </div>
 
               <div>
-                <label className="text-sm text-gray-600">Gender</label>
+                <label className="text-sm text-gray-600 dark:text-white">Gender</label>
                 <div className="flex items-center gap-4 mt-1">
                   <label className="flex items-center gap-1">
                     <input
@@ -137,25 +137,25 @@ const Profile = () => {
               </div>
 
               <div>
-                <label className="text-sm text-gray-600">Date of Birth</label>
+                <label className="text-sm text-gray-600 dark:text-white">Date of Birth</label>
                 <input
                   type="date"
                   name="dob"
                   value={formData.dob}
                   onChange={handleChange}
                   disabled={!isEditing}
-                  className="mt-1 p-2 w-full border rounded-md bg-gray-100 disabled:bg-gray-200"
+                  className="mt-1 p-2 w-full border dark:border-[#242F59] rounded-md bg-gray-100 disabled:bg-gray-200 dark:bg-[#242F59]"
                 />
               </div>
 
               <div>
-                <label className="text-sm text-gray-600">Role</label>
+                <label className="text-sm text-gray-600 dark:text-white">Role</label>
                 <select
                   name="role"
                   value={formData.role}
                   onChange={handleChange}
                   disabled={!isEditing}
-                  className="mt-1 p-2 w-full border rounded-md bg-gray-100 disabled:bg-gray-200"
+                  className="mt-1 p-2 w-full border dark:border-[#242F59] rounded-md bg-gray-100 disabled:bg-gray-200 dark:bg-[#242F59]"
                 >
                   <option value="Administrator">Administrator</option>
                   <option value="User">User</option>
@@ -169,7 +169,7 @@ const Profile = () => {
                 type="button"
                 onClick={handleEditToggle}
                 className={clsx(
-                  "btn bg-[#50A663] border-[#50A663] text-white",
+                  "btn bg-[#50A663] border-[#50A663] text-white dark:bg-primary",
                   isEditing ? "w-1/2" : "w-full"
                 )}
               >
@@ -178,7 +178,7 @@ const Profile = () => {
               {isEditing && (
                 <button
                   type="submit"
-                  className="btn btn-success w-1/2 text-white"
+                  className="btn btn-success w-1/2 text-white dark:btn-info"
                 >
                   Save Changes
                 </button>

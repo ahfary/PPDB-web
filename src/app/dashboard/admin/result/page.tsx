@@ -27,13 +27,13 @@ export default function HasilTestPage() {
   };
 
   return (
-    <div className="flex bg-gray-100 min-h-screen text-black">
+    <div className="flex bg-gray-100 min-h-screen text-black dark:bg-[#242F59] dark:text-white">
       <Sidebar />
       <main className="flex-1 p-8">
         <h1 className="text-2xl font-bold mb-6">Hasil Test</h1>
 
         <div className="overflow-x-auto rounded-lg shadow">
-          <table className="min-w-full bg-white border border-gray-200">
+          <table className="min-w-full bg-white border-gray-200 dark:bg-white/40">
             <thead className="bg-gray-200 text-gray-700">
               <tr>
                 <th className="py-3 px-4 text-left">Nama Siswa</th>

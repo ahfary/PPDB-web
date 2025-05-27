@@ -274,13 +274,13 @@ export default function BuatSoalPage() {
     if (error) return <div className="flex min-h-screen bg-gray-100"><Sidebar /><div className="flex-1 p-8 flex items-center justify-center"><h2 className="text-error">Error: {error}</h2></div></div>;
 
     return (
-        <div className="flex min-h-screen bg-gray-100 text-black">
+        <div className="flex min-h-screen bg-gray-100 text-black dark:bg-[#242F59] dark:text-white">
             <Sidebar />
             <div className="flex-1 p-8">
                 <h1 className="text-xl font-bold mb-6">BUAT SOAL - {mapel?.toUpperCase()}</h1>
 
                 {showForm && (
-                    <form onSubmit={handleFormSubmit} className="bg-white shadow-md rounded-lg p-8 mb-6">
+                    <form onSubmit={handleFormSubmit} className="bg-white shadow-md rounded-lg p-8 mb-6 dark:bg-[#0F103F]">
                         <div className="mb-4">
                             <label className="block text-gray-700 text-sm font-bold mb-2">Pertanyaan</label>
                             <input
@@ -375,13 +375,13 @@ export default function BuatSoalPage() {
                 <div className="flex flex-col lg:flex-row gap-6 overflow-y-auto h-[50rem]">
                     <div className="flex-1 overflow-y-auto pr-4">
                         {soal.length === 0 ? (
-                            <div className="bg-white shadow-md rounded-lg p-8 text-center">
+                            <div className="bg-white shadow-md rounded-lg p-8 text-center dark:bg-[#0F103F]">
                                 <p>Tidak ada soal untuk mapel ini.</p>
-                                <button onClick={handleTambahSoal} className="btn btn-success mt-4">Simpan Soal</button>
+                                <button onClick={handleTambahSoal} className="btn btn-success dark:btn-primary mt-4">Simpan Soal</button>
                             </div>
                         ) : (
                             soal.map((item, index) => (
-                                <div key={`${item.id}-${item.pertanyaan}`} className="flex bg-white shadow-md rounded-lg mb-6 overflow-hidden">
+                                <div key={`${item.id}-${item.pertanyaan}`} className="flex bg-white shadow-md rounded-lg mb-6 overflow-hidden dark:bg-[#0F103F]">
                                     <div className="flex-1 p-5">
                                         <p className="mb-3 font-medium">{index + 1}. {item.pertanyaan}</p>
                                         <div className="space-y-2">
@@ -394,32 +394,32 @@ export default function BuatSoalPage() {
                                                         <input
                                                             type="radio"
                                                             name={`soal-${index}`}
-                                                            className="radio radio-sm bg-gray-300"
+                                                            className="radio radio-sm bg-gray-300 text-green-500 dark:bg-[#242F59] dark:text-info"
                                                             readOnly
                                                             checked={isCorrect}
                                                         />
                                                         <input
                                                             type="text"
                                                             value={jawaban || ""}
-                                                            className="input input-bordered input-sm w-full bg-gray-100"
+                                                            className="input input-bordered input-sm w-full bg-gray-100 dark:bg-[#242F59] dark:text-info"
                                                             readOnly
                                                         />
                                                         {isCorrect && (
-                                                            <FaCheckCircle className="text-green-500" />
+                                                            <FaCheckCircle className="text-green-500 dark:text-primary" />
                                                         )}
                                                     </div>
                                                 );
                                             })}
                                         </div>
                                     </div>
-                                    <div className="flex flex-col items-center bg-[#278550] px-2 py-4 text-white gap-3">
-                                        <button onClick={() => handleEditSoal(index)} className="btn btn-ghost text-xs hover:btn-accent">
+                                    <div className="flex flex-col items-center bg-[#278550] px-2 py-4 text-white gap-3 dark:bg-primary">
+                                        <button onClick={() => handleEditSoal(index)} className="btn btn-ghost text-xs hover:btn-accent dark:hover:btn-info dark:hover:text-white">
                                             <FaPen />
                                         </button>
-                                        <button onClick={() => handleHapusSoal(index)} className="btn btn-ghost text-xs hover:btn-accent">
+                                        <button onClick={() => handleHapusSoal(index)} className="btn btn-ghost text-xs hover:btn-accent dark:hover:btn-info dark:hover:text-white">
                                             <FaTrash />
                                         </button>
-                                        <button onClick={handleTambahSoal} className="btn btn-ghost text-xs hover:btn-accent">
+                                        <button onClick={handleTambahSoal} className="btn btn-ghost text-xs hover:btn-accent dark:hover:btn-info dark:hover:text-white">
                                             <FaPlus />
                                         </button>
                                     </div>
@@ -427,10 +427,10 @@ export default function BuatSoalPage() {
                             ))
                         )}
                     </div>
-                    <div className="bg-white shadow-md rounded-lg p-8 w-1/3 h-fit">
+                    <div className="bg-white shadow-md rounded-lg p-8 w-1/3 h-fit dark:bg-[#0F103F]">
                         <div className="grid grid-cols-5 gap-6">
                             {soal.map((_, i) => (
-                                <button key={i} onClick={() => handleNavigateToSoal(i)} className="btn btn-lg bg-white border-1 text-md w-full text-black focus:bg-[#278550] focus:text-white">
+                                <button key={i} onClick={() => handleNavigateToSoal(i)} className="btn btn-lg dark:text-white bg-white border-1 text-md w-full text-black focus:bg-[#278550] dark:focus:bg-primary focus:text-white dark:bg-[#242F59]">
                                     {i + 1}
                                 </button>
                             ))}

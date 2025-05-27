@@ -30,25 +30,23 @@ export default function TestPage() {
   const router = useRouter();
 
   return (
-    <div className="flex h-screen bg-gray-100 text-black">
+    <div className="flex h-screen bg-gray-100 text-black dark:bg-[#242F59] dark:text-white">
       <Sidebar />
 
       <main className="p-8 w-5/6">
-      <h1 className="text-2xl font-bold mb-6">
-        Soal Ujian
-      </h1>
+        <h1 className="text-2xl font-bold mb-6">Soal Ujian</h1>
         <div className="grid grid-cols-2 gap-8 overflow-y-auto h-9/10">
           {mapelList.map((mapel) => (
             <div
               key={mapel.id}
-              className="bg-white rounded-lg shadow-md p-4 flex flex-col"
+              className="bg-white rounded-lg shadow-md p-4 flex flex-col dark:bg-[#0F103F]"
             >
               {/* Placeholder Gambar */}
-              <div className="bg-gray-300 h-56 rounded mb-4"></div>
+              <div className="bg-gray-300 h-56 rounded mb-4 dark:bg-gray-500"></div>
 
               {/* Nama dan Deskripsi */}
-              <h2 className="text-lg font-bold">{mapel.name}</h2>
-              <p className="text-sm text-gray-600 mb-4">{mapel.desc}</p>
+              <h2 className="text-lg font-bold mb-2">{mapel.name}</h2>
+              <p className="text-sm text-gray-600 mb-4 dark:text-gray-400">{mapel.desc}</p>
 
               {/* Tombol Aksi */}
               <div className="mt-auto flex gap-2">
@@ -56,7 +54,7 @@ export default function TestPage() {
                   onClick={() =>
                     router.push(`/dashboard/admin/test/${mapel.id}`)
                   }
-                  className="flex-1 btn bg-[#278550] border-none text-white"
+                  className="flex-1 btn bg-[#278550] dark:bg-primary border-none text-white"
                 >
                   Lihat Soal
                 </button>

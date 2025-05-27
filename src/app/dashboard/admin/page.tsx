@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useTheme } from "next-themes";
 
 import Sidebar from "@/app/components/sidebar";
 import {
@@ -23,6 +24,9 @@ const COLORS = ["#50A663", "#278550"];
 
 // Komponen Utama
 export default function StatistikPage() {
+  const { theme } = useTheme();
+  const isDarkMode = theme === "dark";
+
   const [data, setData] = useState<any[]>([]);
   const [summaryData, setSummaryData] = useState({
     totalSiswa: 0,
@@ -34,7 +38,6 @@ export default function StatistikPage() {
     jumlahTidakLulus: 0,
   });
 
-  
   // Data statis untuk visualisasi sementara
   const rataNilaiPerTes = [
     { tes: "Tes 1", nilai: 72 },
@@ -43,17 +46,17 @@ export default function StatistikPage() {
     { tes: "Tes 4", nilai: 74 },
     { tes: "Tes 5", nilai: 80 },
   ];
-  
+
   const genderDistribusi = [
     { name: "laki-laki", value: summaryData.siswaLaki },
     { name: "perempuan", value: summaryData.siswaPerempuan },
   ];
-  
+
   const nilaiPerGender = [
     { gender: "Laki-laki", rataRata: 87 },
     { gender: "Perempuan", rataRata: 50 },
   ];
-  
+
   const distribusiNilai = [
     { range: "<60", jumlah: 10 },
     { range: "60–70", jumlah: 25 },
@@ -61,7 +64,7 @@ export default function StatistikPage() {
     { range: "80–90", jumlah: 30 },
     { range: "90+", jumlah: 15 },
   ];
-  
+
   const domisiliData = [
     { kota: "Jakarta", jumlah: 30 },
     { kota: "Bandung", jumlah: 20 },
@@ -70,14 +73,14 @@ export default function StatistikPage() {
     { kota: "Medan", jumlah: 8 },
     { kota: "Makassar", jumlah: 5 },
   ];
-  
+
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetch("/api/statistic");
       const result = await response.json();
-      
+
       setData(result.dataSiswa);
-      
+
       // Update summary berdasarkan field yang sesuai
       setSummaryData({
         totalSiswa: result.total,
@@ -89,15 +92,15 @@ export default function StatistikPage() {
         jumlahTidakLulus: 1, // ganti sesuai logic kamu kalau sudah ada fieldnya
       });
     };
-    
+
     fetchData();
   }, []);
-  
-  console.log(data)
-  
+
+  console.log(data);
+
   // console.log(summaryData.siswaLaki);
   return (
-    <div className="flex bg-gray-100 min-h-screen text-black">
+    <div className="flex bg-gray-100 min-h-screen text-black dark:bg-[#242F59] dark:text-white">
       <Sidebar />
       <main className="flex-1 p-6 md:p-8 overflow-y-auto h-screen">
         <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
@@ -136,7 +139,7 @@ export default function StatistikPage() {
                   cx="50%"
                   cy="50%"
                   outerRadius={100}
-                  label
+                  label={{ fill: isDarkMode ? "#fff" : "#000" }}
                 >
                   {genderDistribusi.map((entry, index) => (
                     <Cell
@@ -223,9 +226,9 @@ export default function StatistikPage() {
 // Komponen kartu ringkasan
 function StatCard({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="bg-white rounded-xl shadow p-4">
-      <p className="text-gray-500 text-sm">{label}</p>
-      <p className="text-xl font-bold">{value}</p>
+    <div className="bg-white rounded-xl shadow p-4 dark:bg-[#0F103F]">
+      <p className="text-gray-500 text-sm dark:text-white">{label}</p>
+      <p className="text-xl font-bold dark:text-info">{value}</p>
     </div>
   );
 }

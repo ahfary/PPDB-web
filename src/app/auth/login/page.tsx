@@ -21,35 +21,35 @@ const LoginPage = () => {
     router.push("/dashboard/admin");
   };
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center ">
-      <div className="bg-white p-8 rounded shadow-lg w-96">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center text-black dark:text-white dark:bg-[#0F103F]">
+      <div className="bg-white p-8 rounded shadow-lg w-96 dark:bg-[#242F59]">
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
         <form className="flex flex-col" onSubmit={handleSubmit}>
           <div className="mb-4">
             <label
               htmlFor="username"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-medium text-gray-700 mb-2 dark:text-white"
             >
               Username
             </label>
             <input
               type="text"
               id="username"
-              className="input input-lg bg-gray-200"
+              className="input input-lg bg-gray-200 dark:text-gray-500"
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
           <div className="mb-4">
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-medium text-gray-700 mb-2 dark:text-white"
             >
               Password
             </label>
             <input
               type="password"
               id="password"
-              className="input input-lg bg-gray-200"
+              className="input input-lg bg-gray-200 dark:text-gray-500"
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
