@@ -57,11 +57,11 @@ const Users = () => {
 
     switch (filterBy) {
       case "Nama":
-        return item.siswa.nama.toLowerCase().includes(term);
+        return item.siswa?.nama.toLowerCase().includes(term);
       case "Domisili":
-        return item.siswa.domisili.toLowerCase().includes(term);
+        return item.siswa?.domisili.toLowerCase().includes(term);
       case "Jurusan":
-        return item.siswa.jurusan.toLowerCase().includes(term);
+        return item.siswa?.jurusan.toLowerCase().includes(term);
       default:
         return false;
     }
@@ -73,15 +73,13 @@ const Users = () => {
         method: "DELETE",
       });
 
-      console.log(res)
-      
       if (!res.ok) {
         const errorData = await res.json();
-        throw new Error(errorData.message || "Gagal menghapus data siswa.");
+        throw new Error(errorData.error || "Gagal menghapus data siswa.");
       }
-      
-      // Perbarui state lokal setelah penghapusan berhasil
-      setDataSiswa((prev) => prev.filter((item: any) => item.siswa.id !== id));
+
+      // Update state to reflect the deletion
+      setDataSiswa((prev) => prev.filter((item: any) => item.siswa?.id !== id));
 
       MySwal.fire("Terhapus!", "Data berhasil dihapus.", "success");
     } catch (err: any) {
@@ -146,21 +144,21 @@ const Users = () => {
                       />
                     </td>
                     <td className="p-4">
-                      <div className="font-semibold">{item.siswa.nama}</div>
+                      <div className="font-semibold">{item.siswa?.nama}</div>
                       <div className="text-sm text-gray-500">
-                        {item.siswa.alamat}
+                        {item.siswa?.alamat}
                       </div>
                     </td>
-                    <td className="p-4">{item.siswa.jurusan}</td>
-                    <td className="p-4">{item.siswa.noTelpOrtu}</td>
-                    <td className="p-4">{item.siswa.asalSekolah}</td>
+                    <td className="p-4">{item.siswa?.jurusan}</td>
+                    <td className="p-4">{item.siswa?.noTelpOrtu}</td>
+                    <td className="p-4">{item.siswa?.asalSekolah}</td>
                     <td className="p-4">
                       <span
                         className={`px-3 py-1 rounded-full text-sm font-medium ${getBadgeColor(
-                          item.siswa.status
+                          item.siswa?.status
                         )}`}
                       >
-                        {item.siswa.status}
+                        {item.siswa?.status}
                       </span>
                     </td>
                     <td className="p-4 flex items-center gap-3">
@@ -168,19 +166,19 @@ const Users = () => {
                         className="text-gray-400 hover:text-black"
                         onClick={() =>
                           MySwal.fire({
-                            title: <p>{item.siswa.nama}</p>,
+                            title: <p>{item.siswa?.nama}</p>,
                             html: (
                               <div className="text-left">
                                 <p>
                                   <strong>Domisili:</strong>{" "}
-                                  {item.siswa.domisili}
+                                  {item.siswa?.domisili}
                                 </p>
                                 <p>
                                   <strong>Asal Sekolah:</strong>{" "}
-                                  {item.siswa.asalSekolah}
+                                  {item.siswa?.asalSekolah}
                                 </p>
                                 <p>
-                                  <strong>Jurusan:</strong> {item.siswa.jurusan}
+                                  <strong>Jurusan:</strong> {item.siswa?.jurusan}
                                 </p>
                               </div>
                             ),
@@ -191,7 +189,7 @@ const Users = () => {
                             reverseButtons: true,
                           }).then((result: any) => {
                             if (result.isConfirmed) {
-                              router.push(`/dashboard/admin/users/detail/${item.siswa.id}`);
+                              router.push(`/dashboard/admin/users/detail/${item.siswa?.id}`);
                             }
                           })
                         }
@@ -212,7 +210,7 @@ const Users = () => {
                             cancelButtonText: "Batal",
                           });
                           if (result.isConfirmed) {
-                            handleDelete(item.siswa.id);
+                            handleDelete(item.siswa?.id || "");
                           }
                         }}
                       >

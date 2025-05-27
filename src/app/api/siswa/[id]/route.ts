@@ -1,85 +1,23 @@
-import { db } from "@/app/lib/firebase/fiebaseAdmin"; // pastikan path ini benar ya
-import { handleCors } from "@/lib/cors"; // middleware cors handling
+// app/api/siswa/[id]/route.ts
+
 import { NextRequest, NextResponse } from "next/server";
-
-type Siswa = {
-  nama: string;
-  umur: number;
-  kelas: string;
-  domisili?: string;
-  jurusan?: string;
-  noTelpOrtu?: string;
-  asalSekolah?: string;
-  alamat?: string;
-  status?: string;
-};
-
-export async function OPTIONS(req: NextRequest) {
-  // Untuk preflight request CORS
-  return await handleCors(req);
-}
+import { db } from "@/app/lib/firebase/fiebaseAdmin";
 
 export async function GET(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const headers = await handleCors(req);
-  const id = params.id;
-
   try {
-    const siswaRef = db.collection("siswa").doc(id);
-    const doc = await siswaRef.get();
+    const doc = await db.collection("siswa").doc(params.id).get();
 
     if (!doc.exists) {
-      return NextResponse.json(
-        { error: "Siswa tidak ditemukan" },
-        { status: 404, headers }
-      );
+      return NextResponse.json({ error: "Data siswa tidak ditemukan" }, { status: 404 });
     }
 
-    const data = doc.data() as Siswa;
-    return NextResponse.json({ id: doc.id, ...data }, { headers });
+    return NextResponse.json({ id: doc.id, ...doc.data() });
   } catch (error) {
-    console.error("GET /api/siswa/[id] error:", error);
-    return NextResponse.json(
-      { error: "Terjadi kesalahan saat mengambil data siswa" },
-      { status: 500, headers }
-    );
-  }
-}
-
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const headers = await handleCors(req);
-  const id = params.id;
-  const data: Partial<Siswa> = await req.json();
-
-  try {
-    const siswaRef = db.collection("siswa").doc(id);
-
-    // Cek dulu apakah dokumen ada
-    const doc = await siswaRef.get();
-    if (!doc.exists) {
-      return NextResponse.json(
-        { error: "Siswa tidak ditemukan" },
-        { status: 404, headers }
-      );
-    }
-
-    await siswaRef.update(data);
-
-    return NextResponse.json(
-      { message: "Data siswa berhasil diupdate" },
-      { headers }
-    );
-  } catch (error) {
-    console.error("PUT /api/siswa/[id] error:", error);
-    return NextResponse.json(
-      { error: "Gagal mengupdate data siswa" },
-      { status: 500, headers }
-    );
+    console.error("GET siswa error:", error);
+    return NextResponse.json({ error: "Terjadi kesalahan" }, { status: 500 });
   }
 }
 
@@ -87,31 +25,18 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const headers = await handleCors(req);
-  const id = params.id;
-
   try {
-    const siswaRef = db.collection("siswa").doc(id);
+    const siswaRef = db.collection("siswa").doc(params.id);
     const doc = await siswaRef.get();
 
     if (!doc.exists) {
-      return NextResponse.json(
-        { error: "Siswa tidak ditemukan" },
-        { status: 404, headers }
-      );
+      return NextResponse.json({ error: "Data siswa tidak ditemukan" }, { status: 404 });
     }
 
     await siswaRef.delete();
-
-    return NextResponse.json(
-      { message: "Data siswa berhasil dihapus" },
-      { headers }
-    );
+    return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("DELETE /api/siswa/[id] error:", error);
-    return NextResponse.json(
-      { error: "Gagal menghapus data siswa" },
-      { status: 500, headers }
-    );
+    console.error("DELETE siswa error:", error);
+    return NextResponse.json({ error: "Gagal menghapus siswa" }, { status: 500 });
   }
 }

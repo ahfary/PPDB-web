@@ -1,22 +1,16 @@
 // src/app/lib/cors.ts
-import { NextRequest, NextResponse } from 'next/server'
+export async function handleCors(req: Request) {
+  const headers = new Headers();
 
-export async function handleCors(req: NextRequest) {
-  const origin = req.headers.get('origin') || '*'
+  headers.set("Access-Control-Allow-Origin", "*");
+  headers.set("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS");
+  headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
-  const headers = {
-    'Access-Control-Allow-Origin': origin,
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    'Access-Control-Allow-Credentials': 'true',
+  // Tangani preflight OPTIONS
+  if (req.method === "OPTIONS") {
+    return headers;
   }
 
-  if (req.method === 'OPTIONS') {
-    return new NextResponse(null, {
-      status: 204,
-      headers,
-    })
-  }
-
-  return headers
+  return headers;
 }
+

@@ -274,7 +274,7 @@ export default function BuatSoalPage() {
     if (error) return <div className="flex min-h-screen bg-gray-100"><Sidebar /><div className="flex-1 p-8 flex items-center justify-center"><h2 className="text-error">Error: {error}</h2></div></div>;
 
     return (
-        <div className="flex min-h-screen bg-gray-100">
+        <div className="flex min-h-screen bg-gray-100 text-black">
             <Sidebar />
             <div className="flex-1 p-8">
                 <h1 className="text-xl font-bold mb-6">BUAT SOAL - {mapel?.toUpperCase()}</h1>
@@ -372,7 +372,7 @@ export default function BuatSoalPage() {
                     </form>
                 )}
 
-                <div className="flex flex-col lg:flex-row gap-6 overflow-y-auto h-[39rem]">
+                <div className="flex flex-col lg:flex-row gap-6 overflow-y-auto h-[50rem]">
                     <div className="flex-1 overflow-y-auto pr-4">
                         {soal.length === 0 ? (
                             <div className="bg-white shadow-md rounded-lg p-8 text-center">
@@ -413,13 +413,13 @@ export default function BuatSoalPage() {
                                         </div>
                                     </div>
                                     <div className="flex flex-col items-center bg-[#278550] px-2 py-4 text-white gap-3">
-                                        <button onClick={() => handleEditSoal(index)} className="text-xs hover:text-white">
+                                        <button onClick={() => handleEditSoal(index)} className="btn btn-ghost text-xs hover:btn-accent">
                                             <FaPen />
                                         </button>
-                                        <button onClick={() => handleHapusSoal(index)} className="text-xs hover:text-white">
+                                        <button onClick={() => handleHapusSoal(index)} className="btn btn-ghost text-xs hover:btn-accent">
                                             <FaTrash />
                                         </button>
-                                        <button onClick={handleTambahSoal} className="text-xs hover:text-white">
+                                        <button onClick={handleTambahSoal} className="btn btn-ghost text-xs hover:btn-accent">
                                             <FaPlus />
                                         </button>
                                     </div>

@@ -30,7 +30,7 @@ export default function TestPage() {
   const router = useRouter();
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-gray-100 text-black">
       <Sidebar />
 
       <main className="p-8 w-5/6">

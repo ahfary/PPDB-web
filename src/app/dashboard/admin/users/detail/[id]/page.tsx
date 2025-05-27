@@ -10,34 +10,68 @@ import Image from "next/image";
 const MySwal = withReactContent(Swal);
 
 const StudentDetailPage = () => {
-  const { id } = useParams(); // Ambil id dari URL
+  const { id } = useParams();
   const [studentData, setStudentData] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<"formulir" | "berkas">("formulir");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await fetch("/api/statistic");
-        if (!res.ok) throw new Error("Gagal mengambil data siswa.");
+  const fetchData = async () => {
+    try {
+      const res = await fetch("/api/statistic");
+      if (!res.ok) throw new Error("Gagal mengambil data siswa.");
 
-        const result = await res.json();
-        const selectedStudent = result.dataSiswa.find(
-          (item: any) => item.siswa.id === id
-        );
+      const result = await res.json();
+      const selectedStudent = result.dataSiswa.find(
+        (item: any) => item.siswa.id === id
+      );
 
-        if (!selectedStudent) {
-          throw new Error("Siswa tidak ditemukan.");
-        }
-
-        setStudentData(selectedStudent);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        MySwal.fire("Error", "Gagal mengambil data siswa.", "error");
+      if (!selectedStudent) {
+        throw new Error("Siswa tidak ditemukan.");
       }
-    };
 
+      setStudentData(selectedStudent);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      MySwal.fire("Error", "Gagal mengambil data siswa.", "error");
+    }
+  };
+
+  useEffect(() => {
     fetchData();
   }, [id]);
+
+  const handleEditStatus = async () => {
+    const result = await MySwal.fire({
+      title: "Ubah Status?",
+      text: "Apakah kamu yakin ingin mengubah status menjadi 'complete'?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Ya, Ubah!",
+      cancelButtonText: "Batal",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const res = await fetch(`/api/update-status`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id,
+            status: "complete",
+          }),
+        });
+
+        if (!res.ok) throw new Error("Gagal mengubah status.");
+
+        await MySwal.fire("Berhasil!", "Status berhasil diubah.", "success");
+        fetchData(); // Refresh data
+      } catch (error) {
+        console.error(error);
+        MySwal.fire("Error", "Gagal mengubah status.", "error");
+      }
+    }
+  };
 
   if (!studentData) return <div className="p-8">Loading...</div>;
 
@@ -94,84 +128,78 @@ const StudentDetailPage = () => {
           <>
             <div className="grid grid-cols-3 gap-4 text-sm">
               <div>
-                <span className="font-semibold text-xl">Nama Lengkap:</span>{" "}
-                <br />
+                <span className="font-semibold text-xl">Nama Lengkap:</span>
                 <p className="text-lg">{student?.nama}</p>
               </div>
               <div>
-                <span className="font-semibold text-xl">Jurusan:</span> <br />
+                <span className="font-semibold text-xl">Jurusan:</span>
                 <p className="text-lg">{student?.jurusan}</p>
               </div>
               <div>
-                <span className="font-semibold text-xl">Asal Sekolah:</span>{" "}
-                <br />
+                <span className="font-semibold text-xl">Asal Sekolah:</span>
                 <p className="text-lg">{student?.asalSekolah}</p>
               </div>
 
               <div>
-                <span className="font-semibold text-xl">NISN:</span> <br />
+                <span className="font-semibold text-xl">NISN:</span>
                 <p className="text-lg">{student?.nisn}</p>
               </div>
               <div>
-                <span className="font-semibold text-xl">Nama Ibu:</span> <br />
+                <span className="font-semibold text-xl">Nama Ibu:</span>
                 <p className="text-lg">{student?.namaIbu}</p>
               </div>
               <div>
-                <span className="font-semibold text-xl">Nama Bapak:</span>{" "}
-                <br />
+                <span className="font-semibold text-xl">Nama Bapak:</span>
                 <p className="text-lg">{student?.namaAyah}</p>
               </div>
 
               <div>
-                <span className="font-semibold text-xl">Pekerjaan Ibu:</span>{" "}
-                <br />
+                <span className="font-semibold text-xl">Pekerjaan Ibu:</span>
                 <p className="text-lg">{student?.pekerjaanIbu}</p>
               </div>
               <div>
-                <span className="font-semibold text-xl">Pekerjaan Bapak:</span>{" "}
-                <br />
+                <span className="font-semibold text-xl">Pekerjaan Bapak:</span>
                 <p className="text-lg">{student?.pekerjaanAyah}</p>
               </div>
               <div>
                 <span className="font-semibold text-xl">
                   No. Telepon Orang Tua:
-                  <br />
-                </span>{" "}
+                </span>
                 <p className="text-lg">{student?.noTelpOrtu}</p>
               </div>
 
               <div>
-                <span className="font-semibold text-xl">Alamat Rumah:</span>{" "}
-                <br />
+                <span className="font-semibold text-xl">Alamat Rumah:</span>
                 <p className="text-lg">{student?.alamat}</p>
               </div>
               <div>
-                <span className="font-semibold text-xl">Golongan Darah:</span>{" "}
-                <br />
+                <span className="font-semibold text-xl">Golongan Darah:</span>
                 <p className="text-lg">{student?.golonganDarah}</p>
               </div>
               <div>
-                <span className="font-semibold text-xl">Jenis Kelamin:</span>{" "}
-                <br />
+                <span className="font-semibold text-xl">Jenis Kelamin:</span>
                 <p className="text-lg">{student?.jenisKelamin}</p>
               </div>
 
               <div>
-                <span className="font-semibold text-xl">Provinsi:</span> <br />
+                <span className="font-semibold text-xl">Provinsi:</span>
                 <p className="text-lg">{student?.provinsi}</p>
               </div>
               <div>
-                <span className="font-semibold text-xl">Asal Kota:</span> <br />
+                <span className="font-semibold text-xl">Asal Kota:</span>
                 <p className="text-lg">{student?.domisili}</p>
               </div>
               <div>
-                <span className="font-semibold text-xl">Kecamatan:</span> <br />
+                <span className="font-semibold text-xl">Kecamatan:</span>
                 <p className="text-lg">{student?.kecamatan}</p>
               </div>
             </div>
 
             <div className="mt-8 text-right">
-              <button className="btn bg-[#50A663] dark:bg-info dark:text-[#0F103F] text-white border-none">
+              <button
+                onClick={handleEditStatus}
+                className="btn bg-[#50A663] dark:bg-info dark:text-[#0F103F] text-white border-none"
+              >
                 Edit Formulir
               </button>
             </div>
