@@ -1,41 +1,69 @@
-// File: src/app/api/siswa/[id]/route.ts
+// File: pages/api/siswa/[id]/route.ts
 
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/app/lib/firebase/fiebaseAdmin";
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const { id } = params;
 
-    // Check for valid ID
-    if (!id) {
-      return NextResponse.json({ error: "ID tidak valid" }, { status: 400 });
+    if (!id || id === "[id]") {
+      return NextResponse.json({ error: "Invalid or missing document ID" }, { status: 400 });
     }
 
     const pendaftaranRef = db.collection("pendaftaran").doc(id);
     const pendaftaranDoc = await pendaftaranRef.get();
 
     if (!pendaftaranDoc.exists) {
-      return NextResponse.json({ error: "Data pendaftaran tidak ditemukan" }, { status: 404 });
+      return NextResponse.json({ error: "Registration document not found" }, { status: 404 });
     }
 
-    await pendaftaranRef.delete();
+    const data = pendaftaranDoc.data();
+    return NextResponse.json({ id, data });
+  } catch (error) {
+    console.error("GET error:", error);
+    const errorMessage = error instanceof Error ? error.message : "Failed to fetch data";
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
+  }
+}
 
-    // Delete subcollection if needed
-    const subcollectionRef = pendaftaranRef.collection('subcollectionName');
-    const subcollectionSnapshot = await subcollectionRef.get();
+export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const { id } = params;
 
+    if (!id || id === "[id]") {
+      return NextResponse.json({ error: "Invalid or missing document ID" }, { status: 400 });
+    }
+
+    const pendaftaranRef = db.collection("pendaftaran").doc(id);
+    const pendaftaranDoc = await pendaftaranRef.get();
+
+    if (!pendaftaranDoc.exists) {
+      return NextResponse.json({ error: "Registration document not found" }, { status: 404 });
+    }
+
+    // Batch delete operation
     const batch = db.batch();
-    subcollectionSnapshot.forEach((doc) => {
-      batch.delete(doc.ref);
-    });
+    batch.delete(pendaftaranRef);
+
+    // Delete subcollections (example with 'subcollectionName')
+    const subcollections = ['subcollectionName']; // Add more subcollections if needed
+    
+    for (const subcollection of subcollections) {
+      const subcollectionRef = pendaftaranRef.collection(subcollection);
+      const subcollectionSnapshot = await subcollectionRef.get();
+
+      subcollectionSnapshot.forEach((doc) => {
+        batch.delete(doc.ref);
+      });
+    }
 
     await batch.commit();
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, message: "Data deleted successfully" });
   } catch (error) {
     console.error("DELETE error:", error);
-    const errorMessage = error instanceof Error ? error.message : "Gagal menghapus data";
+    const errorMessage = error instanceof Error ? error.message : "Failed to delete data";
     return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
