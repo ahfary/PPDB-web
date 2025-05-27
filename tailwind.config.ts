@@ -1,16 +1,15 @@
-import daisyui from 'daisyui';
+import daisyui from "daisyui";
+import defaultTheme from "tailwindcss/defaultTheme";
 
 const config = {
   theme: {
     extend: {
       fontFamily: {
-        jungle: ['Jungle Adventure', 'sans-serif'],
-        serif: ['Georgia', 'serif'],
-        monospace: ['Courier New', 'monospace'],
+        sans: ["var(--font-poppins)", ...defaultTheme.fontFamily.sans],
       },
       colors: {
-        bg1: '#278550',
-      }
+        bg1: "#278550",
+      },
     },
   },
   plugins: [daisyui],
