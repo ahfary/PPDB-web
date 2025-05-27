@@ -1,42 +1,41 @@
-// app/api/siswa/[id]/route.ts
+// File: src/app/api/siswa/[id]/route.ts
 
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/app/lib/firebase/fiebaseAdmin";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const doc = await db.collection("siswa").doc(params.id).get();
+    const { id } = params;
 
-    if (!doc.exists) {
-      return NextResponse.json({ error: "Data siswa tidak ditemukan" }, { status: 404 });
+    // Check for valid ID
+    if (!id) {
+      return NextResponse.json({ error: "ID tidak valid" }, { status: 400 });
     }
 
-    return NextResponse.json({ id: doc.id, ...doc.data() });
-  } catch (error) {
-    console.error("GET siswa error:", error);
-    return NextResponse.json({ error: "Terjadi kesalahan" }, { status: 500 });
-  }
-}
+    const pendaftaranRef = db.collection("pendaftaran").doc(id);
+    const pendaftaranDoc = await pendaftaranRef.get();
 
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  try {
-    const siswaRef = db.collection("siswa").doc(params.id);
-    const doc = await siswaRef.get();
-
-    if (!doc.exists) {
-      return NextResponse.json({ error: "Data siswa tidak ditemukan" }, { status: 404 });
+    if (!pendaftaranDoc.exists) {
+      return NextResponse.json({ error: "Data pendaftaran tidak ditemukan" }, { status: 404 });
     }
 
-    await siswaRef.delete();
+    await pendaftaranRef.delete();
+
+    // Delete subcollection if needed
+    const subcollectionRef = pendaftaranRef.collection('subcollectionName');
+    const subcollectionSnapshot = await subcollectionRef.get();
+
+    const batch = db.batch();
+    subcollectionSnapshot.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+
+    await batch.commit();
+
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("DELETE siswa error:", error);
-    return NextResponse.json({ error: "Gagal menghapus siswa" }, { status: 500 });
+    console.error("DELETE error:", error);
+    const errorMessage = error instanceof Error ? error.message : "Gagal menghapus data";
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

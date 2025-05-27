@@ -1,5 +1,4 @@
 "use client";
-
 import Sidebar from "@/app/components/sidebar";
 import { FaEye, FaTrash } from "react-icons/fa";
 import { useEffect, useState } from "react";
@@ -33,22 +32,26 @@ const Users = () => {
   const [dataSiswa, setDataSiswa] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await fetch("/api/statistic");
-        if (!res.ok) {
-          throw new Error("Gagal mengambil data siswa.");
-        }
-        const result = await res.json();
-        setDataSiswa(result.dataSiswa);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        MySwal.fire("Error", "Gagal mengambil data siswa.", "error");
+  const fetchData = async () => {
+    try {
+      const res = await fetch("/api/statistic");
+      if (!res.ok) {
+        throw new Error("Gagal mengambil data siswa.");
       }
-    };
+      const result = await res.json();
+      // Ensure each item has an 'id' property corresponding to the Firestore document ID
+      setDataSiswa(result.dataSiswa.map((item: any) => ({
+        id: item.id, // This should be the Firestore document ID
+        ...item,
+      })));
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      MySwal.fire("Error", "Gagal mengambil data siswa.", "error");
+    }
+  };
 
-    fetchData();
-  }, []);
+  fetchData();
+}, []);
 
   const filteredUsers = dataSiswa.filter((item: any) => {
     const term = searchTerm.toLowerCase();
@@ -67,26 +70,31 @@ const Users = () => {
     }
   });
 
-  const handleDelete = async (id: string) => {
-    try {
-      const res = await fetch(`/api/siswa/${id}`, {
-        method: "DELETE",
-      });
+// Inside your handleDelete function
+// Inside your handleDelete function
+// Inside your handleDelete function
+// Inside your handleDelete function
+const handleDelete = async (uid: string) => {
+  try {
+    const res = await fetch(`/api/siswa/[id]`, {
+      method: 'DELETE',
+    });
 
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || "Gagal menghapus data siswa.");
-      }
-
-      // Update state to reflect the deletion
-      setDataSiswa((prev) => prev.filter((item: any) => item.siswa?.id !== id));
-
-      MySwal.fire("Terhapus!", "Data berhasil dihapus.", "success");
-    } catch (err: any) {
-      console.error("Error deleting data:", err);
-      MySwal.fire("Gagal!", err.message || "Terjadi kesalahan saat menghapus.", "error");
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.error || 'Gagal menghapus data');
     }
-  };
+
+    // Update your data state
+    setDataSiswa((prev) => prev.filter((item: any) => item.uid !== uid));
+
+    MySwal.fire('Terhapus!', 'Data berhasil dihapus.', 'success');
+  } catch (err: any) {
+    console.error('Error deleting data:', err);
+    MySwal.fire('Gagal!', err.message || 'Terjadi kesalahan saat menghapus.', 'error');
+  }
+};
+
 
   return (
     <div className="flex bg-gray-100 min-h-screen text-black dark:bg-[#2a3a818a] dark:text-white">
@@ -161,62 +169,62 @@ const Users = () => {
                         {item.siswa?.status}
                       </span>
                     </td>
-                    <td className="p-4 flex items-center gap-3">
-                      <button
-                        className="text-gray-400 hover:text-black"
-                        onClick={() =>
-                          MySwal.fire({
-                            title: <p>{item.siswa?.nama}</p>,
-                            html: (
-                              <div className="text-left">
-                                <p>
-                                  <strong>Domisili:</strong>{" "}
-                                  {item.siswa?.domisili}
-                                </p>
-                                <p>
-                                  <strong>Asal Sekolah:</strong>{" "}
-                                  {item.siswa?.asalSekolah}
-                                </p>
-                                <p>
-                                  <strong>Jurusan:</strong> {item.siswa?.jurusan}
-                                </p>
-                              </div>
-                            ),
-                            showCancelButton: true,
-                            showConfirmButton: true,
-                            confirmButtonText: "Lihat Detail",
-                            cancelButtonText: "Tutup",
-                            reverseButtons: true,
-                          }).then((result: any) => {
-                            if (result.isConfirmed) {
-                              router.push(`/dashboard/admin/users/detail/${item.siswa?.id}`);
-                            }
-                          })
-                        }
-                      >
-                        <FaEye className="cursor-pointer" size={24} />
-                      </button>
-                      <button
-                        className="text-gray-400 hover:text-red-500"
-                        onClick={async () => {
-                          const result = await MySwal.fire({
-                            title: "Yakin ingin menghapus?",
-                            text: "Data ini tidak dapat dikembalikan!",
-                            icon: "warning",
-                            showCancelButton: true,
-                            confirmButtonColor: "#d33",
-                            cancelButtonColor: "#3085d6",
-                            confirmButtonText: "Ya, hapus!",
-                            cancelButtonText: "Batal",
-                          });
-                          if (result.isConfirmed) {
-                            handleDelete(item.siswa?.id || "");
-                          }
-                        }}
-                      >
-                        <FaTrash className="cursor-pointer" size={24} />
-                      </button>
-                    </td>
+                  <td className="p-4 flex items-center gap-3">
+  <button
+    className="text-gray-400 hover:text-black"
+    onClick={() =>
+      MySwal.fire({
+        title: <p>{item.siswa?.nama}</p>,
+        html: (
+          <div className="text-left">
+            <p>
+              <strong>Domisili:</strong>{" "}
+              {item.siswa?.domisili}
+            </p>
+            <p>
+              <strong>Asal Sekolah:</strong>{" "}
+              {item.siswa?.asalSekolah}
+            </p>
+            <p>
+              <strong>Jurusan:</strong> {item.siswa?.jurusan}
+            </p>
+          </div>
+        ),
+        showCancelButton: true,
+        showConfirmButton: true,
+        confirmButtonText: "Lihat Detail",
+        cancelButtonText: "Tutup",
+        reverseButtons: true,
+      }).then((result: any) => {
+        if (result.isConfirmed) {
+          router.push(`/dashboard/admin/users/detail/${item.id}`);
+        }
+      })
+    }
+  >
+    <FaEye className="cursor-pointer" size={24} />
+  </button>
+  <button
+    className="text-gray-400 hover:text-red-500"
+    onClick={async () => {
+      const result = await MySwal.fire({
+        title: "Yakin ingin menghapus?",
+        text: "Data ini tidak dapat dikembalikan!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Ya, hapus!",
+        cancelButtonText: "Batal",
+      });
+      if (result.isConfirmed) {
+        handleDelete(item.uid); // Ensure item.id is the correct Firestore document ID
+      }
+    }}
+  >
+    <FaTrash className="cursor-pointer" size={24} />
+  </button>
+</td>
                   </tr>
                 ))
               ) : (
