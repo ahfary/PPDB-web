@@ -3,67 +3,126 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/app/lib/firebase/fiebaseAdmin";
 
-export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(
+  _req: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const { id } = params;
 
     if (!id || id === "[id]") {
-      return NextResponse.json({ error: "Invalid or missing document ID" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid or missing document ID" },
+        { status: 400 }
+      );
     }
 
     const pendaftaranRef = db.collection("pendaftaran").doc(id);
     const pendaftaranDoc = await pendaftaranRef.get();
 
     if (!pendaftaranDoc.exists) {
-      return NextResponse.json({ error: "Registration document not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Registration document not found" },
+        { status: 404 }
+      );
     }
 
     const data = pendaftaranDoc.data();
     return NextResponse.json({ id, data });
   } catch (error) {
     console.error("GET error:", error);
-    const errorMessage = error instanceof Error ? error.message : "Failed to fetch data";
+    const errorMessage =
+      error instanceof Error ? error.message : "Failed to fetch data";
     return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(
+  req: NextRequest,
+  context: { params: { id: string } }
+) {
   try {
-    const { id } = params;
+    const uid = context.params.id;
 
-    if (!id || id === "[id]") {
-      return NextResponse.json({ error: "Invalid or missing document ID" }, { status: 400 });
+    if (!uid || uid === "[id]") {
+      return NextResponse.json(
+        { error: "Invalid or missing UID" },
+        { status: 400 }
+      );
     }
 
-    const pendaftaranRef = db.collection("pendaftaran").doc(id);
-    const pendaftaranDoc = await pendaftaranRef.get();
+    // Query ke Firestore untuk cari dokumen yang memiliki siswa.id == uid
+    const snapshot = await db
+      .collection("pendaftaran")
+      .where("siswa.id", "==", uid)
+      .get();
 
-    if (!pendaftaranDoc.exists) {
-      return NextResponse.json({ error: "Registration document not found" }, { status: 404 });
+    if (snapshot.empty) {
+      return NextResponse.json(
+        { error: "No matching registration document found" },
+        { status: 404 }
+      );
     }
 
-    // Batch delete operation
-    const batch = db.batch();
-    batch.delete(pendaftaranRef);
+    // Asumsikan hanya satu dokumen yang cocok
+    const docRef = snapshot.docs[0].ref;
+    await docRef.delete();
 
-    // Delete subcollections (example with 'subcollectionName')
-    const subcollections = ['subcollectionName']; // Add more subcollections if needed
-    
-    for (const subcollection of subcollections) {
-      const subcollectionRef = pendaftaranRef.collection(subcollection);
-      const subcollectionSnapshot = await subcollectionRef.get();
-
-      subcollectionSnapshot.forEach((doc) => {
-        batch.delete(doc.ref);
-      });
-    }
-
-    await batch.commit();
-
-    return NextResponse.json({ success: true, message: "Data deleted successfully" });
+    return NextResponse.json({ message: "Data deleted successfully" });
   } catch (error) {
     console.error("DELETE error:", error);
-    const errorMessage = error instanceof Error ? error.message : "Failed to delete data";
-    return NextResponse.json({ error: errorMessage }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to delete student" },
+      { status: 500 }
+    );
+  }
+}
+
+
+export async function PATCH(req: NextRequest) {
+  try {
+    const url = new URL(req.url);
+    const id = url.pathname.split("/").pop(); // ambil ID dari URL terakhir
+
+    if (!id || id === "[id]") {
+      return NextResponse.json(
+        { error: "Invalid or missing ID" },
+        { status: 400 }
+      );
+    }
+
+    const body = await req.json();
+    const { status } = body;
+
+    if (!status) {
+      return NextResponse.json(
+        { error: "Missing status field in request body" },
+        { status: 400 }
+      );
+    }
+
+    // Query ke Firestore berdasarkan siswa.id
+    const snapshot = await db
+      .collection("pendaftaran")
+      .where("siswa.id", "==", id)
+      .get();
+
+    if (snapshot.empty) {
+      return NextResponse.json(
+        { error: "No matching document found" },
+        { status: 404 }
+      );
+    }
+
+    const docRef = snapshot.docs[0].ref;
+    await docRef.update({ status });
+
+    return NextResponse.json({ message: "Status updated successfully" });
+  } catch (error) {
+    console.error("PATCH error:", error);
+    return NextResponse.json(
+      { error: "Failed to update status" },
+      { status: 500 }
+    );
   }
 }

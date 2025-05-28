@@ -3,15 +3,23 @@
 import Sidebar from "@/app/components/sidebar";
 import { FaEye, FaTrash } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import Image from "next/image";
 
 const MySwal = withReactContent(Swal);
 
+const LIMIT = 8;
+
 const Users = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const pageParam = parseInt(searchParams.get("page") || "1");
+  const [dataSiswa, setDataSiswa] = useState<any[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterBy, setFilterBy] = useState("Nama");
 
   const getBadgeColor = (status: string) => {
     switch (status) {
@@ -28,17 +36,11 @@ const Users = () => {
     }
   };
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterBy, setFilterBy] = useState("Nama");
-  const [dataSiswa, setDataSiswa] = useState([]);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await fetch("/api/statistic");
-        if (!res.ok) {
-          throw new Error("Gagal mengambil data siswa.");
-        }
+        if (!res.ok) throw new Error("Gagal mengambil data siswa.");
         const result = await res.json();
         setDataSiswa(result.dataSiswa);
       } catch (error) {
@@ -46,41 +48,42 @@ const Users = () => {
         MySwal.fire("Error", "Gagal mengambil data siswa.", "error");
       }
     };
-
     fetchData();
   }, []);
 
-  const filteredUsers = dataSiswa.filter((item: any) => {
+  useEffect(() => {
     const term = searchTerm.toLowerCase();
+    const filtered = dataSiswa.filter((item: any) => {
+      if (!term) return true;
+      switch (filterBy) {
+        case "Nama":
+          return item.siswa?.nama.toLowerCase().includes(term);
+        case "Domisili":
+          return item.siswa?.domisili.toLowerCase().includes(term);
+        case "Jurusan":
+          return item.siswa?.jurusan.toLowerCase().includes(term);
+        default:
+          return false;
+      }
+    });
 
-    if (!term) return true;
+    setFilteredUsers(filtered);
+  }, [searchTerm, filterBy, dataSiswa]);
 
-    switch (filterBy) {
-      case "Nama":
-        return item.siswa?.nama.toLowerCase().includes(term);
-      case "Domisili":
-        return item.siswa?.domisili.toLowerCase().includes(term);
-      case "Jurusan":
-        return item.siswa?.jurusan.toLowerCase().includes(term);
-      default:
-        return false;
-    }
-  });
+  const startIndex = (pageParam - 1) * LIMIT;
+  const paginatedUsers = filteredUsers.slice(startIndex, startIndex + LIMIT);
+  const totalPages = Math.ceil(filteredUsers.length / LIMIT);
 
   const handleDelete = async (id: string) => {
     try {
       const res = await fetch(`/api/siswa/${id}`, {
         method: "DELETE",
       });
-
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.error || "Gagal menghapus data siswa.");
       }
-
-      // Update state to reflect the deletion
       setDataSiswa((prev) => prev.filter((item: any) => item.siswa?.id !== id));
-
       MySwal.fire("Terhapus!", "Data berhasil dihapus.", "success");
     } catch (err: any) {
       console.error("Error deleting data:", err);
@@ -88,11 +91,14 @@ const Users = () => {
     }
   };
 
+  const goToPage = (page: number) => {
+    router.push(`?page=${page}`);
+  };
+
   return (
     <div className="flex bg-gray-100 min-h-screen text-black dark:bg-[#2a3a818a] dark:text-white">
       <Sidebar />
       <div className="flex-1 p-8">
-        {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Students</h1>
           <div className="join">
@@ -114,7 +120,6 @@ const Users = () => {
           </div>
         </div>
 
-        {/* Table */}
         <div className="overflow-x-auto bg-white rounded-xl shadow-md text-black dark:bg-white/40 dark:text-white">
           <table className="min-w-full">
             <thead className="text-left text-gray-500 border-b">
@@ -130,10 +135,10 @@ const Users = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredUsers.length > 0 ? (
-                filteredUsers.map((item: any, index: number) => (
+              {paginatedUsers.length > 0 ? (
+                paginatedUsers.map((item: any, index: number) => (
                   <tr key={index} className="hover:bg-gray-50 dark:hover:bg-white/10">
-                    <td className="p-4">{index + 1}</td>
+                    <td className="p-4">{startIndex + index + 1}</td>
                     <td className="p-4">
                       <Image
                         src="https://randomuser.me/api/portraits/lego/1.jpg"
@@ -145,9 +150,7 @@ const Users = () => {
                     </td>
                     <td className="p-4">
                       <div className="font-semibold">{item.siswa?.nama}</div>
-                      <div className="text-sm text-gray-500">
-                        {item.siswa?.alamat}
-                      </div>
+                      <div className="text-sm text-gray-500">{item.siswa?.alamat}</div>
                     </td>
                     <td className="p-4">{item.siswa?.jurusan}</td>
                     <td className="p-4">{item.siswa?.noTelpOrtu}</td>
@@ -169,17 +172,9 @@ const Users = () => {
                             title: <p>{item.siswa?.nama}</p>,
                             html: (
                               <div className="text-left">
-                                <p>
-                                  <strong>Domisili:</strong>{" "}
-                                  {item.siswa?.domisili}
-                                </p>
-                                <p>
-                                  <strong>Asal Sekolah:</strong>{" "}
-                                  {item.siswa?.asalSekolah}
-                                </p>
-                                <p>
-                                  <strong>Jurusan:</strong> {item.siswa?.jurusan}
-                                </p>
+                                <p><strong>Domisili:</strong> {item.siswa?.domisili}</p>
+                                <p><strong>Asal Sekolah:</strong> {item.siswa?.asalSekolah}</p>
+                                <p><strong>Jurusan:</strong> {item.siswa?.jurusan}</p>
                               </div>
                             ),
                             showCancelButton: true,
@@ -232,19 +227,29 @@ const Users = () => {
           {/* Pagination */}
           <div className="flex justify-end p-4">
             <div className="join">
-              <button className="join-item bg-gray-200 text-gray-500 btn btn-md border-none">
+              <button
+                className="join-item bg-gray-200 text-gray-500 btn btn-md border-none"
+                onClick={() => pageParam > 1 && goToPage(pageParam - 1)}
+              >
                 «
               </button>
-              <button className="join-item bg-gray-200 text-gray-500 btn btn-md btn-active border-none">
-                1
-              </button>
-              <button className="join-item bg-gray-200 text-gray-500 btn btn-md border-none">
-                2
-              </button>
-              <button className="join-item bg-gray-200 text-gray-500 btn btn-md border-none">
-                3
-              </button>
-              <button className="join-item bg-gray-200 text-gray-500 btn btn-md border-none">
+              {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                  key={i}
+                  className={`join-item btn btn-md border-none ${
+                    pageParam === i + 1
+                      ? "btn-active bg-gray-400 text-white"
+                      : "bg-gray-200 text-gray-500"
+                  }`}
+                  onClick={() => goToPage(i + 1)}
+                >
+                  {i + 1}
+                </button>
+              ))}
+              <button
+                className="join-item bg-gray-200 text-gray-500 btn btn-md border-none"
+                onClick={() => pageParam < totalPages && goToPage(pageParam + 1)}
+              >
                 »
               </button>
             </div>

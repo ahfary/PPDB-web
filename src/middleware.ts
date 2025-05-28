@@ -13,7 +13,7 @@ export function middleware(request: NextRequest) {
     pathname.includes('.')
   ) {
     return NextResponse.next()
-  }
+  } 
 
   // Middleware khusus untuk dashboard admin
   if (pathname.startsWith('/dashboard/admin')) {

@@ -1,46 +1,61 @@
 // src/app/api/statistik/route.ts
 import { NextResponse } from 'next/server';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
-import { initializeApp } from 'firebase/app';
+import { initializeApp, getApps } from 'firebase/app';
 
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyDqaxNwwZF5W5Oy2kw1CtQdnrDKlNJmImc",
   authDomain: "ppdb-project-b213e.firebaseapp.com",
   projectId: "ppdb-project-b213e",
-  storageBucket: "ppdb-project-b213e.firebasestorage.app",
+  storageBucket: "ppdb-project-b213e.appspot.com",
   messagingSenderId: "562454569704",
   appId: "1:562454569704:web:3f457426b101d5fe36df5d"
 };
 
-const app = initializeApp(firebaseConfig);
+// Inisialisasi Firebase hanya jika belum ada
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 const db = getFirestore(app);
 
+// Fungsi GET untuk API /api/statistik
 export async function GET() {
-  const pendaftaranRef = collection(db, 'pendaftaran');
-  const snapshot = await getDocs(pendaftaranRef);
-  const data = snapshot.docs.map(doc => doc.data());
+  try {
+    const pendaftaranRef = collection(db, 'pendaftaran');
+    const snapshot = await getDocs(pendaftaranRef);
+    const data = snapshot.docs.map(doc => doc.data());
 
-  // Hitung statistik
-  const total = data.length;
-  const berdasarkanJurusan: Record<string, number> = {};
-  const berdasarkanJenisKelamin: Record<string, number> = {};
+    const total = data.length;
+    const berdasarkanJurusan: Record<string, number> = {};
+    const berdasarkanJenisKelamin: Record<string, number> = {};
 
-   data.forEach(item => {
-    const jurusan = item?.siswa?.jurusan;
-    const gender = item?.siswa?.jenisKelamin;
+    data.forEach(item => {
+      const siswa = item?.siswa;
+      if (!siswa) return;
 
-    if (jurusan) {
-      berdasarkanJurusan[jurusan] = (berdasarkanJurusan[jurusan] || 0) + 1;
-    }
-    if (gender) {
-      berdasarkanJenisKelamin[gender] = (berdasarkanJenisKelamin[gender] || 0) + 1;
-    }
-  });
+      const jurusan = siswa.jurusan;
+      const gender = siswa.jenisKelamin;
 
-  return NextResponse.json({
-    total,
-    berdasarkanJurusan,
-    berdasarkanJenisKelamin,
-    dataSiswa: data  // <-- ini data lengkap tiap dokumen
-  });
+      if (jurusan) {
+        berdasarkanJurusan[jurusan] = (berdasarkanJurusan[jurusan] || 0) + 1;
+      }
+
+      if (gender) {
+        berdasarkanJenisKelamin[gender] = (berdasarkanJenisKelamin[gender] || 0) + 1;
+      }
+    });
+
+    return NextResponse.json({
+      total,
+      berdasarkanJurusan,
+      berdasarkanJenisKelamin,
+      dataSiswa: data
+    });
+
+  } catch (error) {
+    console.error('Error saat mengambil data statistik:', error);
+    return NextResponse.json(
+      { error: 'Gagal mengambil data statistik.' },
+      { status: 500 }
+    );
+  }
 }

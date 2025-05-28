@@ -51,13 +51,12 @@ const StudentDetailPage = () => {
 
     if (result.isConfirmed) {
       try {
-        const res = await fetch(`/api/update-status`, {
+        const res = await fetch(`/api/siswa/${id}`, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            id,
             status: "complete",
           }),
         });
