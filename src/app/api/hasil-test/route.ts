@@ -14,17 +14,6 @@ const db = getFirestore();
 
 export async function GET() {
   try {
-    // Ambil semua pendaftar
-    const daftarSnapshot = await db.collection("pendaftaran").get();
-    const pendaftarMap: Record<string, string> = {};
-
-    daftarSnapshot.forEach((doc) => {
-      const data = doc.data();
-      if (data.userid) {
-        pendaftarMap[data.userid] = data.nama || "Tidak diketahui";
-      }
-    });
-
     // Ambil semua hasil test
     const snapshot = await db.collection("hasil_test").get();
     const rawData = snapshot.docs.map((doc) => doc.data() as any);
@@ -35,12 +24,10 @@ export async function GET() {
       const id = item.userId;
 
       if (!userGrouped[id]) {
-        const studentName = pendaftarMap[id] || "Tidak diketahui";
-
         userGrouped[id] = {
           userId: id,
           scores: {},
-          studentName,
+          studentName: item.namaSiswa || "Tidak diketahui",
         };
       }
 

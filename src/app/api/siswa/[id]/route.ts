@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // File: pages/api/siswa/[id]/route.ts
 
 import { NextRequest, NextResponse } from "next/server";
