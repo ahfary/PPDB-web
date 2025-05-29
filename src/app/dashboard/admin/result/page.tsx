@@ -1,79 +1,76 @@
-'use client';
+"use client";
 
 import Sidebar from "@/app/components/sidebar";
-import { useState } from "react";
-import dummyResults from "@/app/dummy/dataTest.json";
+import { useEffect, useState } from "react";
 
-interface StudentResult {
-  id: number;
+interface Hasil {
   studentName: string;
-  scores: {
-    matematika: number;
-    inggris: number;
-    agama: number;
-    psikolog: number;
-  };
-  date: string;
+  matematika: number;
+  bahasaInggris: number;
+  agama: number;
+  psikolog: number;
+  rataRata: number;
+  status: string;
 }
 
-export default function HasilTestPage() {
-  const [results] = useState<StudentResult[]>(dummyResults);
+export default function HasilPage() {
+  const [data, setData] = useState<Hasil[]>([]);
 
-  // Helper untuk menghitung rata-rata dari 3 mapel
-  const calculateAverage = (scores: StudentResult["scores"]) => {
-    return Math.round(
-      (scores.matematika + scores.inggris + scores.agama) / 3
-    );
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await fetch("/api/hasil-test");
+      const json = await res.json();
+      setData(json);
+    };
+    fetchData();
+  }, []);
+
+  console.log("Data hasil test:", data);
 
   return (
-    <div className="flex bg-gray-100 min-h-screen text-black dark:bg-[#242F59] dark:text-white">
+    <div className="text-black flex bg-white">
       <Sidebar />
-      <main className="flex-1 p-8">
-        <h1 className="text-2xl font-bold mb-6">Hasil Test</h1>
-
-        <div className="overflow-x-auto rounded-lg shadow">
-          <table className="min-w-full bg-white border-gray-200 dark:bg-white/40">
-            <thead className="bg-gray-200 text-gray-700">
+      <div className="flex-1 p-8">
+        <h2 className="text-xl font-bold mb-4">Hasil Test</h2>
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white border border-gray-300">
+            <thead className="bg-gray-100">
               <tr>
-                <th className="py-3 px-4 text-left">Nama Siswa</th>
-                <th className="py-3 px-4 text-left">Matematika</th>
-                <th className="py-3 px-4 text-left">Bahasa Inggris</th>
-                <th className="py-3 px-4 text-left">Agama</th>
-                <th className="py-3 px-4 text-left">Psikolog</th>
-                <th className="py-3 px-4 text-left">Rata-rata</th>
-                <th className="py-3 px-4 text-left">Status</th>
-                <th className="py-3 px-4 text-left">Tanggal</th>
+                <th className="border px-4 py-2">Nama Siswa</th>
+                <th className="border px-4 py-2">Matematika</th>
+                <th className="border px-4 py-2">Bahasa Inggris</th>
+                <th className="border px-4 py-2">Agama</th>
+                <th className="border px-4 py-2">Psikolog</th>
+                <th className="border px-4 py-2">Rata-rata</th>
+                <th className="border px-4 py-2">Status</th>
               </tr>
             </thead>
             <tbody>
-              {results.map((result) => {
-                const average = calculateAverage(result.scores);
-                const status = average >= 75 ? "Lulus" : "Tidak Lulus";
-
-                return (
-                  <tr key={result.id} className="border-t">
-                    <td className="py-3 px-4">{result.studentName}</td>
-                    <td className="py-3 px-4">{result.scores.matematika}</td>
-                    <td className="py-3 px-4">{result.scores.inggris}</td>
-                    <td className="py-3 px-4">{result.scores.agama}</td>
-                    <td className="py-3 px-4">{result.scores.psikolog}</td>
-                    <td className="py-3 px-4 font-semibold">{average}</td>
-                    <td
-                      className={`py-3 px-4 font-semibold ${
-                        status === "Lulus" ? "text-green-600" : "text-red-600"
-                      }`}
-                    >
-                      {status}
-                    </td>
-                    <td className="py-3 px-4">{result.date}</td>
-                  </tr>
-                );
-              })}
+              {data.map((item, idx) => (
+                <tr key={idx}>
+                  <td className="border px-4 py-2">{item.studentName}</td>
+                  <td className="border px-4 py-2">{item.matematika || 0}</td>
+                  <td className="border px-4 py-2">{item.inggris || 0}</td>
+                  <td className="border px-4 py-2">{item.agama || 0}</td>
+                  <td className="border px-4 py-2">{item.psikolog || 0}</td>
+                  <td className="border px-4 py-2 font-bold">
+                    {item.rataRata}
+                  </td>
+                  <td
+                    className={`border px-4 py-2 font-bold ${
+                      item.status === "Lulus"
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }`}
+                  >
+                    {item.status}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

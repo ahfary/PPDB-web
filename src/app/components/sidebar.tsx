@@ -26,7 +26,9 @@ const Sidebar = () => {
   return (
     <aside className="w-64 h-screen bg-[#278550] flex flex-col justify-between text-white p-4 dark:bg-[#0F103F]">
       <div>
-        <div className="text-2xl font-bold mb-10">PPDB</div>
+        <div className="text-2xl font-bold mb-10">
+          <Image src={"/assets/SMKKN.png"} alt={"smk-kreatif-nusantara"} width={350} height={350} />
+        </div>
 
         <nav className="flex flex-col space-y-2">
           {menuItems.map((item) => {

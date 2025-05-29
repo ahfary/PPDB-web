@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // app/api/soal/route.js
 import { initializeApp, getApps } from "firebase/app";
 import { getFirestore, collection, getDocs, query, where } from "firebase/firestore";
@@ -19,15 +20,15 @@ if (getApps().length === 0) {
 
 const db = getFirestore();
 
-export async function GET(request) {
+export async function GET(request: any) {
   const { searchParams } = new URL(request.url);
   const mapel = searchParams.get("mapel");
   const getid = searchParams.get("id");
   console.log(getid)
 
   try {
-    let soalQuery = collection(db, "soal_test");
-    let q = soalQuery;
+    const soalQuery = collection(db, "soal_test");
+    let q: any = soalQuery;
 
     if (mapel) {
       // Mencari dokumen di mana field 'nama_pelajaran' sama dengan mapel
@@ -35,7 +36,7 @@ export async function GET(request) {
     }
 
     const snapshot = await getDocs(q);
-    const data = snapshot.docs.map((doc) => ({
+    const data= snapshot.docs.map((doc: any) => ({
       id: doc.id,
       ...doc.data(),
     }));

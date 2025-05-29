@@ -34,6 +34,7 @@ export async function GET() {
 
       const jurusan = siswa.jurusan;
       const gender = siswa.jenisKelamin;
+      // console.log(data);
 
       if (jurusan) {
         berdasarkanJurusan[jurusan] = (berdasarkanJurusan[jurusan] || 0) + 1;
@@ -50,6 +51,7 @@ export async function GET() {
       berdasarkanJenisKelamin,
       dataSiswa: data
     });
+
 
   } catch (error) {
     console.error('Error saat mengambil data statistik:', error);

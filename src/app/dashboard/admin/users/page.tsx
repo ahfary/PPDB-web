@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import Sidebar from "@/app/components/sidebar";
@@ -27,10 +28,10 @@ const Users = () => {
         return "bg-orange-100 text-orange-600";
       case "Task":
         return "bg-yellow-100 text-yellow-600";
-      case "Resume Review":
+      case "pending":
         return "bg-purple-100 text-purple-600";
-      case "Final Interview":
-        return "bg-green-100 text-green-600";
+      case "complete":
+        return "bg-success text-white";
       default:
         return "bg-gray-100 text-gray-600";
     }

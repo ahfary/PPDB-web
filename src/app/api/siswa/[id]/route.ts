@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // File: pages/api/siswa/[id]/route.ts
 
 import { NextRequest, NextResponse } from "next/server";
@@ -5,10 +6,10 @@ import { db } from "@/app/lib/firebase/fiebaseAdmin";
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string  }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     if (!id || id === "[id]") {
       return NextResponse.json(
@@ -39,10 +40,11 @@ export async function GET(
 
 export async function DELETE(
   req: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string  }> }
 ) {
   try {
-    const uid = context.params.id;
+    const {  params}=  context;
+    const { id: uid } =  await params;
 
     if (!uid || uid === "[id]") {
       return NextResponse.json(
@@ -82,7 +84,7 @@ export async function DELETE(
 export async function PATCH(req: NextRequest) {
   try {
     const url = new URL(req.url);
-    const id = url.pathname.split("/").pop(); // ambil ID dari URL terakhir
+    const id = url.pathname.split("/").pop(); // ambil ID dari URL
 
     if (!id || id === "[id]") {
       return NextResponse.json(
@@ -101,7 +103,7 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
-    // Query ke Firestore berdasarkan siswa.id
+    // Query berdasarkan siswa.id
     const snapshot = await db
       .collection("pendaftaran")
       .where("siswa.id", "==", id)
@@ -115,7 +117,7 @@ export async function PATCH(req: NextRequest) {
     }
 
     const docRef = snapshot.docs[0].ref;
-    await docRef.update({ status });
+    await docRef.update({ "siswa.status": status });
 
     return NextResponse.json({ message: "Status updated successfully" });
   } catch (error) {

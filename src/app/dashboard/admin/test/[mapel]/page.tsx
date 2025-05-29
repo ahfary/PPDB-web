@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import Sidebar from "@/app/components/sidebar";
@@ -55,8 +56,8 @@ export default function BuatSoalPage() {
                     ...doc.data(),
                 }));
 
-                const transformedData = [];
-                data.forEach((doc) => {
+                const transformedData: any[] = [];
+                data.forEach((doc: any) => {
                     // Cek jika dokumen memiliki properti soal dan mapel yang sesuai
                     if (doc.soal && doc.nama_pelajaran === mapel) {
                         doc.soal.forEach((s: any) => {

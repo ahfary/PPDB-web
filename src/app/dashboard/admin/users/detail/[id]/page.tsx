@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import Sidebar from "@/app/components/sidebar";
@@ -41,15 +42,20 @@ const StudentDetailPage = () => {
 
   const handleEditStatus = async () => {
     const result = await MySwal.fire({
-      title: "Ubah Status?",
-      text: "Apakah kamu yakin ingin mengubah status menjadi 'complete'?",
-      icon: "question",
+      title: "Ubah Status",
+      input: "select",
+      inputOptions: {
+        complete: "Complete",
+        pending: "Pending",
+        accepted: "Accepted",
+      },
+      inputPlaceholder: "Pilih status baru",
       showCancelButton: true,
-      confirmButtonText: "Ya, Ubah!",
+      confirmButtonText: "Ubah",
       cancelButtonText: "Batal",
     });
 
-    if (result.isConfirmed) {
+    if (result.isConfirmed && result.value) {
       try {
         const res = await fetch(`/api/siswa/${id}`, {
           method: "PATCH",
@@ -57,7 +63,7 @@ const StudentDetailPage = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            status: "complete",
+            status: result.value, // value dari dropdown
           }),
         });
 
@@ -199,7 +205,7 @@ const StudentDetailPage = () => {
                 onClick={handleEditStatus}
                 className="btn bg-[#50A663] dark:bg-info dark:text-[#0F103F] text-white border-none"
               >
-                Edit Formulir
+                Edit Status
               </button>
             </div>
           </>
