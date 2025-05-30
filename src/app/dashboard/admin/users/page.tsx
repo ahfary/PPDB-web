@@ -142,11 +142,11 @@ const Users = () => {
                     <td className="p-4">{startIndex + index + 1}</td>
                     <td className="p-4">
                       <Image
-                        src="https://randomuser.me/api/portraits/lego/1.jpg"
-                        className="w-10 h-10 rounded-full"
-                        alt="avatar"
-                        width={40}
-                        height={40}
+                      src={item.berkas?.foto3x4Url || "https://randomuser.me/api/portraits/lego/1.jpg"}
+                      className="w-10 h-10 rounded-full object-cover"
+                      alt="avatar"
+                      width={40}
+                      height={40}
                       />
                     </td>
                     <td className="p-4">

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { cert, getApps, initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
-import serviceAccount from "@/config/firebaseServiceAccountKey.json";
+import serviceAccount from "@/app/config/firebaseServiceAccountKey.json";
 import { NextResponse } from "next/server";
 
 if (getApps().length === 0) {

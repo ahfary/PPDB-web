@@ -1,19 +1,55 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-"use client";
+/* eslint-disable @next/next/no-img-element */
+"use client"
 
-import Sidebar from "@/app/components/sidebar";
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import Image from "next/image";
+import { FileText, User } from 'lucide-react';
+import { Icon } from "@iconify/react";
 
 const MySwal = withReactContent(Swal);
 
-const StudentDetailPage = () => {
+// Import your Sidebar component
+import Sidebar from "@/app/components/sidebar";
+import { ParamValue } from "next/dist/server/request/params";
+
+type StudentData = {
+  siswa: {
+    id: string;
+    nama?: string;
+    golonganDarah?: string;
+    jenisKelamin?: string;
+    jurusan?: string;
+    namaIbu?: string;
+    noTelpOrtu?: string;
+    namaAyah?: string;
+    alamat?: string;
+    asalSekolah?: string;
+    pekerjaanIbu?: string;
+    nisn?: string;
+    kecamatan?: string;
+    provinsi?: string;
+    domisili?: string;
+    pekerjaanAyah?: string;
+    // add other fields as needed
+  };
+  berkas?: {
+    ijazahUrl?: string;
+    suratKeteranganLulusUrl?: string;
+    raporUrl?: string;
+    aktaKelahiranUrl?: string;
+    foto3x4Url?: string;
+    kartuKeluargaUrl?: string;
+    // add other fields as needed
+  };
+  // add other fields as needed
+};
+
+const StudentDetailsPage = () => {
   const { id } = useParams();
-  const [studentData, setStudentData] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState<"formulir" | "berkas">("formulir");
+  const [studentData, setStudentData] = useState<StudentData | null>(null);
+  const [activeTab, setActiveTab] = useState("formulir");
 
   const fetchData = async () => {
     try {
@@ -22,7 +58,7 @@ const StudentDetailPage = () => {
 
       const result = await res.json();
       const selectedStudent = result.dataSiswa.find(
-        (item: any) => item.siswa.id === id
+        (item: { siswa: { id: ParamValue; }; }) => item.siswa.id === id
       );
 
       if (!selectedStudent) {
@@ -92,159 +128,351 @@ const StudentDetailPage = () => {
   ];
 
   return (
-    <div className="flex bg-white text-black dark:bg-[#2a3a818a] dark:text-white">
-      <Sidebar />
-      <div className="p-8 flex-1">
-        <h1 className="text-2xl font-bold mb-6">Student Details</h1>
+    <div className="flex min-h-screen bg-gray-50">
+      {/* Sidebar fixed on the left */}
+      <div className="fixed inset-y-0 left-0 z-30 w-64">
+        <Sidebar />
+      </div>
 
-        {/* Tab buttons */}
-        <div className="flex gap-4 pb-4 mb-4">
+      {/* Main Content with left margin to accommodate the fixed sidebar */}
+      <div className="flex-1 p-8 ml-64">
+        <h1 className="text-3xl font-bold mb-6 text-gray-800">Student Details</h1>
+
+        {/* Tab Navigation */}
+        <div className="flex gap-2 mb-6">
           <button
             onClick={() => setActiveTab("formulir")}
-            className={`btn border-none rounded shadow text-white ${
+            className={`px-6 py-2 rounded ${
               activeTab === "formulir"
-                ? "bg-[#278550] dark:bg-primary"
-                : "text-gray-600 bg-[#50A663] dark:bg-info"
+                ? "bg-green-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
           >
             Formulir Siswa
           </button>
           <button
             onClick={() => setActiveTab("berkas")}
-            className={`btn border-none rounded shadow text-white ${
+            className={`px-6 py-2 rounded ${
               activeTab === "berkas"
-                ? "bg-[#278550] dark:bg-primary"
-                : "text-gray-600 bg-[#50A663] dark:bg-info"
+                ? "bg-green-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
           >
             Berkas Siswa
           </button>
         </div>
 
-        {/* Nama Atas */}
-        <div className="bg-white shadow-md rounded p-4 mb-4 dark:bg-[#0F103F] dark:text-white">
-          <p className="text-3xl font-semibold dark:text-white text-black">
-            {student?.nama}
-          </p>
+        {/* Student Header Card */}
+        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+          <div className="flex items-center gap-6">
+            <div className="w-24 h-24 bg-gray-300 rounded-full flex items-center justify-center overflow-hidden">
+              {berkas.foto3x4Url ? (
+                <img
+                  src={berkas.foto3x4Url}
+                  alt="Foto 3x4"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <User size={40} className="text-gray-600" />
+              )}
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-2">
+                <User size={20} className="text-gray-600" />
+                <span className="text-sm text-black">Nama Lengkap</span>
+              </div>
+              <input
+                type="text"
+                value={student?.nama || ""}
+                readOnly
+                className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 text-black text-lg"
+              />
+              <div className="flex gap-4 mt-4">
+                <div className="flex-1 max-w-[260px]">
+                  <span className="text-sm text-black block mb-1">Golongan Darah</span>
+                  <input
+                    type="text"
+                    value={student?.golonganDarah || "-"}
+                    readOnly
+                    className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 text-black text-sm"
+                  />
+                </div>
+                <div className="flex-1 max-w-[300px]">
+                  <span className="text-sm text-black block mb-1">Jenis Kelamin</span>
+                  <input
+                    type="text"
+                    value={student?.jenisKelamin || "-"}
+                    readOnly
+                    className="w-full p-2 border border-gray-300 rounded-lg bg-gray-50 text-black text-sm"
+                  />
+                </div>
+                <div className="flex items-end flex-1 gap-2">
+                  <button
+                    onClick={handleEditStatus}
+                    className="bg-green-600 hover:bg-green-700 text-white px-10 py-2 rounded-lg w-full"
+                  >
+                    Edit Status
+                  </button>
+                  <button
+                    onClick={async () => {
+                      const result = await MySwal.fire({
+                        title: "Hapus Berkas",
+                        text: "Apakah Anda yakin ingin menghapus semua berkas siswa ini?",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonText: "Ya, hapus",
+                        cancelButtonText: "Batal",
+                      });
+                      if (result.isConfirmed) {
+                        try {
+                          const res = await fetch(`/api/siswa/${id}/berkas`, {
+                            method: "DELETE",
+                          });
+                          if (!res.ok) throw new Error("Gagal menghapus berkas.");
+                          await MySwal.fire("Berhasil!", "Berkas berhasil dihapus.", "success");
+                          fetchData();
+                        } catch (error) {
+                          console.error(error);
+                          MySwal.fire("Error", "Gagal menghapus berkas.", "error");
+                        }
+                      }
+                    }}
+                    className="bg-red-600 hover:bg-red-700 text-white px-10 py-2 rounded-lg w-full"
+                  >
+                    Hapus Berkas
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* === FORMULIR === */}
+        {/* Form Content */}
         {activeTab === "formulir" && (
-          <>
-            <div className="grid grid-cols-3 gap-4 text-sm">
-              <div>
-                <span className="font-semibold text-xl">Nama Lengkap:</span>
-                <p className="text-lg">{student?.nama}</p>
-              </div>
-              <div>
-                <span className="font-semibold text-xl">Jurusan:</span>
-                <p className="text-lg">{student?.jurusan}</p>
-              </div>
-              <div>
-                <span className="font-semibold text-xl">Asal Sekolah:</span>
-                <p className="text-lg">{student?.asalSekolah}</p>
-              </div>
-
-              <div>
-                <span className="font-semibold text-xl">NISN:</span>
-                <p className="text-lg">{student?.nisn}</p>
-              </div>
-              <div>
-                <span className="font-semibold text-xl">Nama Ibu:</span>
-                <p className="text-lg">{student?.namaIbu}</p>
-              </div>
-              <div>
-                <span className="font-semibold text-xl">Nama Bapak:</span>
-                <p className="text-lg">{student?.namaAyah}</p>
-              </div>
-
-              <div>
-                <span className="font-semibold text-xl">Pekerjaan Ibu:</span>
-                <p className="text-lg">{student?.pekerjaanIbu}</p>
-              </div>
-              <div>
-                <span className="font-semibold text-xl">Pekerjaan Bapak:</span>
-                <p className="text-lg">{student?.pekerjaanAyah}</p>
-              </div>
-              <div>
-                <span className="font-semibold text-xl">
-                  No. Telepon Orang Tua:
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="flex items-center gap-2 mb-6">
+              <span className="text-green-600">
+                <Icon icon="lucide:user" width={20} height={20} />
+              </span>
+              <span className="text-lg font-semibold text-gray-800">Formulir Siswa</span>
+            </div>
+            <div className="grid grid-cols-3 gap-6">
+              {/* Jurusan */}
+              <div className="bg-white rounded-lg shadow p-4">
+                <span className="text-sm text-black block mb-2 items-center gap-1">
+                  <Icon icon="mdi:school-outline" className="text-green-600" width={16} height={16} />
+                  Jurusan
                 </span>
-                <p className="text-lg">{student?.noTelpOrtu}</p>
+                <input
+                  type="text"
+                  value={student?.jurusan || "-"}
+                  readOnly
+                  className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 text-black"
+                />
               </div>
 
-              <div>
-                <span className="font-semibold text-xl">Alamat Rumah:</span>
-                <p className="text-lg">{student?.alamat}</p>
-              </div>
-              <div>
-                <span className="font-semibold text-xl">Golongan Darah:</span>
-                <p className="text-lg">{student?.golonganDarah}</p>
-              </div>
-              <div>
-                <span className="font-semibold text-xl">Jenis Kelamin:</span>
-                <p className="text-lg">{student?.jenisKelamin}</p>
+              {/* Nama Ibu */}
+              <div className="bg-white rounded-lg shadow p-4">
+                <span className="text-sm text-black block mb-2 items-center gap-1">
+                  <Icon icon="mdi:human-female" className="text-pink-500" width={16} height={16} />
+                  Nama Ibu
+                </span>
+                <input
+                  type="text"
+                  value={student?.namaIbu || "-"}
+                  readOnly
+                  className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 text-black"
+                />
               </div>
 
-              <div>
-                <span className="font-semibold text-xl">Provinsi:</span>
-                <p className="text-lg">{student?.provinsi}</p>
+              {/* No. Telpon Orang Tua */}
+              <div className="bg-white rounded-lg shadow p-4">
+                <span className="text-sm text-black block mb-2 items-center gap-1">
+                  <Icon icon="mdi:phone-outline" className="text-blue-500" width={16} height={16} />
+                  No. Telpon Orang Tua
+                </span>
+                <input
+                  type="text"
+                  value={student?.noTelpOrtu || "-"}
+                  readOnly
+                  className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 text-black"
+                />
               </div>
-              <div>
-                <span className="font-semibold text-xl">Asal Kota:</span>
-                <p className="text-lg">{student?.domisili}</p>
+
+              {/* Nama Bapak */}
+              <div className="bg-white rounded-lg shadow p-4">
+                <span className="text-sm text-black block mb-2 flex items-center gap-1">
+                  <Icon icon="mdi:human-male" className="text-blue-700" width={16} height={16} />
+                  Nama Ayah
+                </span>
+                <input
+                  type="text"
+                  value={student?.namaAyah || "-"}
+                  readOnly
+                  className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 text-black"
+                />
               </div>
-              <div>
-                <span className="font-semibold text-xl">Kecamatan:</span>
-                <p className="text-lg">{student?.kecamatan}</p>
+
+              {/* Alamat Rumah */}
+              <div className="col-span-2 bg-white rounded-lg shadow p-4">
+                <span className="text-sm text-black block mb-2 flex items-center gap-1">
+                  <Icon icon="mdi:home-outline" className="text-yellow-600" width={16} height={16} />
+                  Alamat Rumah
+                </span>
+                <input
+                  type="text"
+                  value={student?.alamat || "-"}
+                  readOnly
+                  className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 text-black"
+                />
+              </div>
+
+              {/* Asal Sekolah */}
+              <div className="bg-white rounded-lg shadow p-4">
+                <span className="text-sm text-black block mb-2 flex items-center gap-1">
+                  <Icon icon="mdi:school" className="text-purple-600" width={16} height={16} />
+                  Asal Sekolah
+                </span>
+                <input
+                  type="text"
+                  value={student?.asalSekolah || "-"}
+                  readOnly
+                  className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 text-black"
+                />
+              </div>
+
+              {/* Pekerjaan Ibu */}
+              <div className="bg-white rounded-lg shadow p-4">
+                <span className="text-sm text-black block mb-2 flex items-center gap-1">
+                  <Icon icon="mdi:briefcase-outline" className="text-pink-600" width={16} height={16} />
+                  Pekerjaan Ibu
+                </span>
+                <input
+                  type="text"
+                  value={student?.pekerjaanIbu || "-"}
+                  readOnly
+                  className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 text-black"
+                />
+              </div>
+
+              {/* NISN */}
+              <div className="bg-white rounded-lg shadow p-4">
+                <span className="text-sm text-black block mb-2 flex items-center gap-1">
+                  <Icon icon="mdi:card-account-details-outline" className="text-gray-700" width={16} height={16} />
+                  NISN
+                </span>
+                <input
+                  type="text"
+                  value={student?.nisn || "-"}
+                  readOnly
+                  className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 text-black"
+                />
+              </div>
+
+              {/* Kecamatan */}
+              <div className="bg-white rounded-lg shadow p-4">
+                <span className="text-sm text-black block mb-2 flex items-center gap-1">
+                  <Icon icon="mdi:map-marker-radius-outline" className="text-green-700" width={16} height={16} />
+                  Kecamatan
+                </span>
+                <input
+                  type="text"
+                  value={student?.kecamatan || "-"}
+                  readOnly
+                  className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 text-black"
+                />
+              </div>
+
+              {/* Provinsi */}
+              <div className="bg-white rounded-lg shadow p-4">
+                <span className="text-sm text-black block mb-2 flex items-center gap-1">
+                  <Icon icon="mdi:earth" className="text-orange-600" width={16} height={16} />
+                  Provinsi
+                </span>
+                <input
+                  type="text"
+                  value={student?.provinsi || "-"}
+                  readOnly
+                  className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 text-black"
+                />
+              </div>
+
+              {/* Asal Kota / Domisili */}
+              <div className="bg-white rounded-lg shadow p-4">
+                <span className="text-sm text-black block mb-2 flex items-center gap-1">
+                  <Icon icon="mdi:city-variant-outline" className="text-blue-400" width={16} height={16} />
+                  Asal Kota
+                </span>
+                <input
+                  type="text"
+                  value={student?.domisili || "-"}
+                  readOnly
+                  className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 text-black"
+                />
+              </div>
+
+              {/* Pekerjaan Ayah */}
+              <div className="bg-white rounded-lg shadow p-4">
+                <span className="text-sm text-black block mb-2 flex items-center gap-1">
+                  <Icon icon="mdi:briefcase-outline" className="text-blue-600" width={16} height={16} />
+                  Pekerjaan Ayah
+                </span>
+                <input
+                  type="text"
+                  value={student?.pekerjaanAyah || "-"}
+                  readOnly
+                  className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 text-black"
+                />
               </div>
             </div>
-
-            <div className="mt-8 text-right">
-              <button
-                onClick={handleEditStatus}
-                className="btn bg-[#50A663] dark:bg-info dark:text-[#0F103F] text-white border-none"
-              >
-                Edit Status
-              </button>
-            </div>
-          </>
+          </div>
         )}
 
-        {/* === BERKAS === */}
+        {/* Berkas Tab Content */}
         {activeTab === "berkas" && (
-          <>
-            <div className="grid grid-cols-3 gap-10 text-sm">
+          <div className="bg-white rounded-lg shadow-md p-6">
+            {/* Documents List */}
+            <div className="space-y-4">
               {documents.map((doc, idx) => (
-                <div key={idx}>
-                  <div className="font-semibold mb-1">{doc.label}</div>
-                  <div className="mb-2">
-                    {doc.url ? (
-                      <a
-                        href={doc.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Image
-                          src={doc.url}
-                          alt={doc.label}
-                          className="w-full h-auto max-h-40 object-contain border rounded"
-                          width={200}
-                          height={200}
-                        />
-                      </a>
-                    ) : (
-                      <span className="text-gray-500 italic">
-                        Tidak ada file
-                      </span>
-                    )}
+                <div
+                  key={idx}
+                  className="bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-4">
+                    {/* Document Preview or Icon */}
+                    <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden border border-gray-200">
+                      {doc.url ? (
+                        // Show image preview if it's an image, otherwise show icon
+                        /\.(jpg|jpeg|png|webp|gif)$/i.test(doc.url) ? (
+                          <img
+                            src={doc.url}
+                            alt={doc.label}
+                            className="object-cover w-full h-full"
+                          />
+                        ) : (
+                          <FileText size={32} className="text-gray-500" />
+                        )
+                      ) : (
+                        <FileText size={32} className="text-gray-300" />
+                      )}
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-800">{doc.label}</h3>
+                      <p className="text-sm text-gray-600">
+                        {doc.url
+                          ? `Document Name: ${doc.label
+                              .toLowerCase()
+                              .replace(/\s+/g, "")}.${doc.url.split(".").pop()}`
+                          : "Belum diupload"}
+                      </p>
+                    </div>
                   </div>
                   {doc.url && (
                     <a
                       href={doc.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="btn text-white bg-[#278550] py-2 border-none w-full dark:bg-primary"
+                      className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg"
                     >
                       Lihat
                     </a>
@@ -252,17 +480,11 @@ const StudentDetailPage = () => {
                 </div>
               ))}
             </div>
-
-            <div className="mt-8 text-right">
-              <button className="btn bg-[#50A663] dark:bg-info dark:text-[#0F103F] text-white border-none">
-                Hapus Berkas
-              </button>
-            </div>
-          </>
+          </div>
         )}
       </div>
     </div>
   );
 };
 
-export default StudentDetailPage;
+export default StudentDetailsPage;
